@@ -1,5 +1,5 @@
 Class {
 	#name : #Partida,
-	#superclass : #Jugador,
+	#superclass : #Object,
 	#category : #Cuadrilatero
 }
