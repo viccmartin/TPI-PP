@@ -1,6 +1,6 @@
 Class {
 	#name : #VentanaJuego,
-	#superclass : #ComposableModel,
+	#superclass : #ComposablePresenter,
 	#instVars : [
 		'app',
 		'partida',

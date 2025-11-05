@@ -1,6 +1,6 @@
 Class {
 	#name : #CuadrilateroApp,
-	#superclass : #ComposableModel,
+	#superclass : #Object,
 	#instVars : [
 		'partidaActual'
 	],

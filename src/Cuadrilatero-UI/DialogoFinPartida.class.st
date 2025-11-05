@@ -1,6 +1,6 @@
 Class {
 	#name : #DialogoFinPartida,
-	#superclass : #ComposableModel,
+	#superclass : #ComposablePresenter,
 	#instVars : [
 		'app',
 		'resultado',
