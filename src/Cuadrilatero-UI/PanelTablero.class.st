@@ -3,7 +3,7 @@ Class {
 	#superclass : #ComposablePresenter,
 	#instVars : [
 		'tablero',
-		'morfTablero'
+		'morphTablero'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -12,7 +12,7 @@ Class {
 PanelTablero class >> defaultSpec [
 	<spec>
     ^ SpecLayout composed
-        add: #morfTablero;
+        newRow: [ :row | row add: #morphTablero ];
         yourself
 ]
 
@@ -59,14 +59,15 @@ PanelTablero >> desactivarModoColocacion [ [
 
 { #category : #initialization }
 PanelTablero >> initializeWidgets [
-    morfTablero := MorphicGenericAdapter new.
-    morfTablero morph: (TableroMorph tablero: tablero).
+    morphTablero := MorphicGenericAdapter new.
+    morphTablero morph: (TableroMorph  tablero: tablero)
+
 
 ]
 
 { #category : #acccessing }
-PanelTablero >> morfTablero [ 
-    ^ morfTablero
+PanelTablero >> morphTablero [
+    ^ morphTablero
  
 ]
 

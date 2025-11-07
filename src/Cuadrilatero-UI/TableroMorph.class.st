@@ -1,6 +1,6 @@
 Class {
 	#name : #TableroMorph,
-	#superclass : #BorderedMorph,
+	#superclass : #Morph,
 	#instVars : [
 		'tablero',
 		'tamanioCelda',
@@ -22,7 +22,7 @@ TableroMorph class >> tablero: unTablero [ [
 ]
 
 { #category : #operations }
-TableroMorph >> activarModoColocacion: ancho alto: alto [ [
+TableroMorph >> activarModoColocacion: ancho alto: alto [ 
     "Activa el modo de colocación de figura"
     figuraPreview := Dictionary new
         at: #ancho put: ancho;
@@ -30,7 +30,7 @@ TableroMorph >> activarModoColocacion: ancho alto: alto [ [
         yourself.
     posicionPreview := nil.
     puedeColocar := false.
-]
+
 
 ]
 
@@ -177,7 +177,6 @@ TableroMorph >> handlesMouseOver: evt [ [
 
 { #category : #initialization }
 TableroMorph >> initialize [ 
-	super initialize.
     tamanioCelda := 30.
     figuraPreview := nil.
     posicionPreview := nil.

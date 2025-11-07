@@ -20,10 +20,7 @@ Class {
 VentanaJuego class >> defaultSpec [
 	<spec>
     ^ SpecLayout composed
-        newColumn: [ :col |
-            col
-                newRow: [ :row |
-                    row add: #panelTablero. ] ];
+        newRow: [ :row | row add: #panelTablero origin: 0@0 corner: 1@1 ];
         yourself
 ]
 
