@@ -16,55 +16,51 @@ PanelTablero class >> defaultSpec [
         yourself
 ]
 
-{ #category : #'private ' }
-PanelTablero >> construirMorfTablero [ 
-    | morph filas columnas tamanioCelda |
-    filas := tablero filas.
-    columnas := tablero columnas.
-    tamanioCelda := 30. "pixeles por celda"
-    
-    morph := Morph new.
-    morph color: Color white.
-    morph extent: (columnas * tamanioCelda) @ (filas * tamanioCelda).
-    
-    "Dibujar la grilla"
-    self dibujarGrillaEn: morph conCeldaDeTamaño: tamanioCelda.
-    
-    ^ morph
+{ #category : #'instance creation' }
+PanelTablero class >> on: unTablero [
+    ^ self basicNew
+        tablero: unTablero;
+        initialize;
+        yourself
+
 ]
 
-{ #category : #'private ' }
-PanelTablero >> dibujarGrillaEn: unMorph conCeldaDeTamaño: tamanioCelda [ 
-    | filas columnas |
-    filas := tablero filas.
-    columnas := tablero columnas.
-    
-    "Dibujar líneas verticales"
-    0 to: columnas do: [ :col |
-        | linea |
-        linea := LineMorph 
-            from: (col * tamanioCelda) @ 0 
-            to: (col * tamanioCelda) @ (filas * tamanioCelda) 
-            color: Color gray 
-            width: 1.
-        unMorph addMorph: linea ].
-    
-    "Dibujar líneas horizontales"
-    0 to: filas do: [ :fila |
-        | linea |
-        linea := LineMorph 
-            from: 0 @ (fila * tamanioCelda) 
-            to: (columnas * tamanioCelda) @ (fila * tamanioCelda) 
-            color: Color gray 
-            width: 1.
-        unMorph addMorph: linea ].
+{ #category : #operations }
+PanelTablero >> activarModoColocacion: ancho alto: alto [ [
+    "Delega al TableroMorph"
+    self tableroMorph activarModoColocacion: ancho alto: alto
+]
+
+]
+
+{ #category : #operations }
+PanelTablero >> actualizar [ [
+    "Fuerza actualización visual del tablero"
+    self tableroMorph  changed
+]
+
+]
+
+{ #category : #operations }
+PanelTablero >> callback: unBloque [ [
+    "Define el callback que se ejecuta al hacer click"
+    self tableroMorph  callback: unBloque
+]
+
+]
+
+{ #category : #operations }
+PanelTablero >> desactivarModoColocacion [ [
+    "Delega al TableroMorph"
+    self tableroMorph  desactivarModoColocacion
+]
 
 ]
 
 { #category : #initialization }
 PanelTablero >> initializeWidgets [
     morfTablero := MorphicGenericAdapter new.
-    morfTablero morph: self construirMorfTablero.
+    morfTablero morph: (TableroMorph tablero: tablero).
 
 ]
 
@@ -74,12 +70,11 @@ PanelTablero >> morfTablero [
  
 ]
 
-{ #category : #'instance creation' }
-PanelTablero >> on: unTablero [
-    ^ self basicNew
-        tablero: unTablero;
-        initialize;
-        yourself
+{ #category : #operations }
+PanelTablero >> rotarFigura [ [
+    "Delega al TableroMorph"
+    self tableroMorph  rotarFigura
+]
 
 ]
 
@@ -91,4 +86,12 @@ PanelTablero >> tablero [
 { #category : #acccessing }
 PanelTablero >> tablero: unTablero [
     tablero := unTablero
+]
+
+{ #category : #acccessing }
+PanelTablero >> tableroMorph [ [
+    "Acceso al morph interno"
+    ^ morfTablero morph
+]
+
 ]

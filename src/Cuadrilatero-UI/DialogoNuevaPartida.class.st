@@ -187,17 +187,12 @@ DialogoNuevaPartida >> labelJugador2 [
 ]
 
 { #category : #private }
-DialogoNuevaPartida >> obtenerTamanoTablero [
+DialogoNuevaPartida >> obtenerTamanoTablero [ 
     | seleccion |
-    seleccion := campoDropDown  selectedItem.
-    
-    (seleccion = '12×12 (Rápida)') ifTrue: [ ^ 12 ].
-    (seleccion = '18×18 (Media)') ifTrue: [ ^ 18 ].
-    (seleccion = '24×12 (Larga)') ifTrue: [ ^ 24 ].
-    
-    "Por defecto"
-    ^ 12
-
+    seleccion := campoDropDown selectedItem.
+    "seleccion es un array como { '12×12 (Rápida)'. 12@12 }"
+    "Retornamos el segundo elemento que es un Point"
+    ^ seleccion second x  "Usamos solo la coordenada x porque todos son cuadrados o usamos x para ancho"
 ]
 
 { #category : #accessing }

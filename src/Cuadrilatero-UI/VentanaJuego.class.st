@@ -64,7 +64,6 @@ VentanaJuego >> initialExtent [
 
 { #category : #initialization }
 VentanaJuego >> initializeWidgets [ 
-   
     panelTablero := PanelTablero on: partida tablero.
     
 

@@ -30,22 +30,22 @@ CuadrilateroApp >> iniciar [
 ]
 
 { #category : #operations }
-CuadrilateroApp >> iniciarPartidaCon: nombre1 y: nombre2 tablero: tamano [
-	"Llamado por DialogoNuevaPartida cuando se confirma"
-	| j1 j2 tablero |
-	j1 := Jugador new.
-	j1 nombre: nombre1.
+CuadrilateroApp >> iniciarPartidaCon: nombre1 y: nombre2 tablero: tamano [ 
+    "Llamado por DialogoNuevaPartida cuando se confirma"
+    | j1 j2 tablero |
+    j1 := Jugador new.
+    j1 nombre: nombre1.
 
-	j2 := Jugador new.
-	j2 nombre: nombre2.
+    j2 := Jugador new.
+    j2 nombre: nombre2.
 
-	tablero := Tablero new.
-	tablero filas: tamano columnas: tamano.
+    tablero := Tablero new.
+    tablero filas: tamano columnas: tamano.
 
-	partidaActual := Partida new.
-	partidaActual jugador1: j1 jugador2: j2 tablero: tablero.
+    partidaActual := Partida new.
+    partidaActual jugador1: j1 jugador2: j2 tablero: tablero.
 
-	self mostrarVentanaJuego.
+    self mostrarVentanaJuego.
 
 ]
 
