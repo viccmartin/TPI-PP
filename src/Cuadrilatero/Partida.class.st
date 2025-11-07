@@ -3,7 +3,6 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'jugador1',
-		'jugadro2',
 		'tablero',
 		'turnoActual',
 		'dado1',
