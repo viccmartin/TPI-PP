@@ -4,6 +4,7 @@ Class {
 	#instVars : [
 		'app',
 		'partida',
+		'panelTablero',
 		'labelTurno',
 		'botonTirarDados',
 		'botonFinalizar',
@@ -14,6 +15,17 @@ Class {
 	],
 	#category : #'Cuadrilatero-UI'
 }
+
+{ #category : #specs }
+VentanaJuego class >> defaultSpec [
+	<spec>
+    ^ SpecLayout composed
+        newColumn: [ :col |
+            col
+                newRow: [ :row |
+                    row add: #panelTablero. ] ];
+        yourself
+]
 
 { #category : #'instance creation' }
 VentanaJuego class >> on: unaPartida app: unaApp [
@@ -45,6 +57,24 @@ VentanaJuego >> finalizarPartida [
 
 ]
 
+{ #category : #api }
+VentanaJuego >> initialExtent [ 
+	^1000@700.
+]
+
+{ #category : #initialization }
+VentanaJuego >> initializeWidgets [ 
+   
+    panelTablero := PanelTablero on: partida tablero.
+    
+
+]
+
+{ #category : #acccessing }
+VentanaJuego >> panelTablero [
+ ^panelTablero.
+]
+
 { #category : #acccessing }
 VentanaJuego >> partida: unaPartida app: unaApp [
     app := unaApp.
@@ -52,6 +82,11 @@ VentanaJuego >> partida: unaPartida app: unaApp [
     dimensionesActuales := nil.
     figuraRotada := false.
 
+]
+
+{ #category : #api }
+VentanaJuego >> title [ 
+^'Cuadrilatero - Partida en juego'
 ]
 
 { #category : #operations }

@@ -98,8 +98,8 @@ DialogoNuevaPartida >> campoJugador2 [
 ]
 
 { #category : #operations }
-DialogoNuevaPartida >> iniciarPartida [
-    | nombreJ1 nombreJ2 tamano |
+DialogoNuevaPartida >> iniciarPartida [ 
+    | nombreJ1 nombreJ2 tamanio |
     
     "Validaciones"
     nombreJ1 := campoJugador1 text trimBoth.
@@ -109,14 +109,19 @@ DialogoNuevaPartida >> iniciarPartida [
         UIManager default inform: 'Debe ingresar nombres para ambos jugadores.'.
         ^ self ].
     
+    nombreJ1 = nombreJ2 ifTrue: [
+        UIManager default inform: 'Los jugadores deben tener nombres diferentes.'.
+        ^ self ].
+    
     "Obtener tamaño"
-    tamano := self obtenerTamanoTablero.
+    tamanio := self obtenerTamanoTablero.
     
     "Delegar a la app coordinadora"
-    app iniciarPartidaCon: nombreJ1 y: nombreJ2 tablero: tamano.
+    app iniciarPartidaCon: nombreJ1 y: nombreJ2 tablero: tamanio.
     
     "Cerrar este diálogo"
     self window close.
+
 ]
 
 { #category : #accessing }
@@ -182,9 +187,9 @@ DialogoNuevaPartida >> labelJugador2 [
 ]
 
 { #category : #private }
-DialogoNuevaPartida >> obtenerTamanoTablero [ [
+DialogoNuevaPartida >> obtenerTamanoTablero [
     | seleccion |
-    seleccion := dropdownTamano selectedItem.
+    seleccion := campoDropDown  selectedItem.
     
     (seleccion = '12×12 (Rápida)') ifTrue: [ ^ 12 ].
     (seleccion = '18×18 (Media)') ifTrue: [ ^ 18 ].
@@ -192,7 +197,6 @@ DialogoNuevaPartida >> obtenerTamanoTablero [ [
     
     "Por defecto"
     ^ 12
-]
 
 ]
 
