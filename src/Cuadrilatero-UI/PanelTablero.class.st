@@ -92,7 +92,7 @@ PanelTablero >> tablero: unTablero [
 { #category : #acccessing }
 PanelTablero >> tableroMorph [ [
     "Acceso al morph interno"
-    ^ morfTablero morph
+    ^ morphTablero morph
 ]
 
 ]
