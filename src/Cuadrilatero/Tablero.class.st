@@ -74,16 +74,22 @@ Tablero >> filas: f columnas:c [
 
 { #category : #testing }
 Tablero >> puedeColocarFigura: ancho alto: alto en: posicion [
-	"Verifica si una figura cabe sin superposición"
 	| x y |
 	x := posicion x.
 	y := posicion y.
-
-	"Verifica superposición con otras figuras"
-	figuras do: [ :figura |
-		(self figura: figura colisionaCon: ancho alto: alto en: posicion)
-			ifTrue: [ ^false ] ].
-	^ true
+	(x < 0 or: [ y < 0 ])
+		ifTrue: [ ^ false ].
+	x + ancho > columnas
+		ifTrue: [ ^ false ].
+	y + alto > filas
+		ifTrue: [ ^ false ].
+	^ figuras
+		noneSatisfy: [ :figura | 
+			self
+				figura: figura
+				colisionaCon: ancho
+				alto: alto
+				en: posicion ]
 ]
 
 { #category : #operations }

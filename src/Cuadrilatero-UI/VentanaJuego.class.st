@@ -8,7 +8,8 @@ Class {
 		'labelTurno',
 		'labelDimensiones',
 		'botonTirarDados',
-		'botonRotar'
+		'botonRotar',
+		'dimensionesActuales'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -68,10 +69,11 @@ VentanaJuego >> botonTirarDados [
 
 { #category : #operations }
 VentanaJuego >> colocarFiguraEn: posicion [ 
-    | dimensiones ancho alto exito |
-    dimensiones := labelDimensiones label splitOn: ' × '.
-    ancho := dimensiones first asInteger.
-    alto := dimensiones second asInteger.
+    | ancho alto exito |
+    dimensionesActuales ifNil: [ ^ self ].
+    
+    ancho := dimensionesActuales at: #ancho.
+    alto := dimensionesActuales at: #alto.
     
     exito := partida colocarFigura: ancho alto: alto en: posicion.
     
@@ -81,12 +83,18 @@ VentanaJuego >> colocarFiguraEn: posicion [
         self actualizarTurno.
         botonTirarDados enabled: true.
         botonRotar enabled: false.
+        dimensionesActuales := nil.
         
         self verificarFinDeJuego.
     ] ifFalse: [
         UIManager default inform: 'No se puede colocar la figura ahí.'.
     ].
 
+]
+
+{ #category : #acccessing }
+VentanaJuego >> dimensionesActuales [
+	^dimensionesActuales.
 ]
 
 { #category : #operations }
@@ -147,20 +155,33 @@ VentanaJuego >> panelTablero [
 VentanaJuego >> partida: unaPartida app: unaApp [
     app := unaApp.
     partida := unaPartida.
+dimensionesActuales := nil.
 
 ]
 
 { #category : #operations }
 VentanaJuego >> rotarFigura [ 
-	panelTablero rotarFigura
+	 | temp |
+    dimensionesActuales ifNil: [ ^ self ].
+    
+    "Intercambiar ancho y alto"
+    temp := dimensionesActuales at: #ancho.
+    dimensionesActuales at: #ancho put: (dimensionesActuales at: #alto).
+    dimensionesActuales at: #alto put: temp.
+    
+    "Actualizar label"
+    labelDimensiones label: (dimensionesActuales at: #ancho) asString, ' × ', (dimensionesActuales at: #alto) asString.
+    
+    "Rotar en el tablero"
+    panelTablero rotarFigura.
 ]
 
 { #category : #operations }
 VentanaJuego >> tirarDados [ 
-	| dimensiones ancho alto |
-    dimensiones := partida tirarDados.
-    ancho := dimensiones at: #ancho.
-    alto := dimensiones at: #alto.
+	| ancho alto |
+    dimensionesActuales := partida tirarDados.
+    ancho := dimensionesActuales at: #ancho.
+    alto := dimensionesActuales at: #alto.
     
     labelDimensiones label: ancho asString, ' × ', alto asString.
     
@@ -168,6 +189,7 @@ VentanaJuego >> tirarDados [
     (partida verificarJugadorPuedeColocar: ancho alto: alto) ifFalse: [
         UIManager default inform: partida turnoActual nombre, ' no puede colocar esta figura. Turno perdido.'.
         self actualizarTurno.
+        dimensionesActuales := nil.
         ^ self
     ].
     
