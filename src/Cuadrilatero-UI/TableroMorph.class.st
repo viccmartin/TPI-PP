@@ -70,16 +70,25 @@ TableroMorph >> desactivarModoColocacion [
 
 { #category : #drawing }
 TableroMorph >> dibujarFigura: figura en: aCanvas [ 
-    | rect colorRect |
+    | rect colorRect colorBorde esJugador1 |
     rect := Rectangle 
         origin: (figura posicion x * tamanioCelda) @ (figura posicion y * tamanioCelda)
         extent: (figura ancho * tamanioCelda) @ (figura alto * tamanioCelda).
     
-    "Color diferente según el jugador (puedes ajustar esto)"
-    colorRect := Color blue alpha: 0.3.
+    "Determinar si es jugador 1 comparando con el primer jugador que colocó una figura"
+    esJugador1 := tablero figuras isEmpty not and: [ 
+        tablero figuras first jugador == figura jugador ].
+    
+    colorRect := esJugador1 
+        ifTrue: [ Color cyan alpha: 0.6 ]
+        ifFalse: [ Color orange alpha: 0.6 ].
+    
+    colorBorde := esJugador1 
+        ifTrue: [ Color cyan darker ]
+        ifFalse: [ Color orange darker ].
     
     aCanvas fillRectangle: rect color: colorRect.
-    aCanvas frameRectangle: rect width: 2 color: Color blue.
+    aCanvas frameRectangle: rect width: 2 color: colorBorde.
 
 ]
 
@@ -178,9 +187,7 @@ TableroMorph >> initialize [
     posicionPreview := nil.
     puedeColocar := false.
     callback := nil.
-	Transcript show: 'por ejecutar self borderWidth'; cr.
     self borderWidth: 2.
-	Transcript show: 'por ejecutar self borderColor'; cr.
     self borderColor: Color black.
     self color: Color white.
 
@@ -255,9 +262,7 @@ TableroMorph >> tablero: unTablero [
     tablero := unTablero.
      ancho := tablero columnas * tamanioCelda.
     alto := tablero filas * tamanioCelda.
-	Transcript show: 'Estableciendo extent: ', ancho asString, '@', alto asString; cr.
-    self bounds: (0@0 extent: ancho@alto).
-    Transcript show: 'TableroMorph creado exitosamente'; cr.
+    self  extent: ancho@alto.
 
 
 
