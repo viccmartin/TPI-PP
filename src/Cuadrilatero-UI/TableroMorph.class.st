@@ -13,11 +13,11 @@ Class {
 }
 
 { #category : #'instance creation' }
-TableroMorph class >> tablero: unTablero [ [
-    ^ self new
+TableroMorph class >> tablero: unTablero [ 
+     ^ self new
         tablero: unTablero;
         yourself
-]
+
 
 ]
 
@@ -35,7 +35,7 @@ TableroMorph >> activarModoColocacion: ancho alto: alto [
 ]
 
 { #category : #'private ' }
-TableroMorph >> actualizarValidezPosicion [ [
+TableroMorph >> actualizarValidezPosicion [ 
     "Verifica si la figura se puede colocar en la posición actual"
     | ancho alto |
     posicionPreview ifNil: [ ^ self ].
@@ -45,31 +45,31 @@ TableroMorph >> actualizarValidezPosicion [ [
     alto := figuraPreview at: #alto.
     
     puedeColocar := tablero puedeColocarFigura: ancho alto: alto en: posicionPreview.
-]
+
 
 ]
 
 { #category : #acccessing }
-TableroMorph >> callback: unBloque [ [
+TableroMorph >> callback: unBloque [ 
     "Bloque que se ejecutará cuando se haga click en una posición válida"
     callback := unBloque
-]
+
 
 ]
 
 { #category : #operations }
-TableroMorph >> desactivarModoColocacion [ [
+TableroMorph >> desactivarModoColocacion [ 
     "Desactiva el modo de colocación"
     figuraPreview := nil.
     posicionPreview := nil.
     puedeColocar := false.
     self changed.
-]
+
 
 ]
 
 { #category : #drawing }
-TableroMorph >> dibujarFigura: figura en: aCanvas [ [
+TableroMorph >> dibujarFigura: figura en: aCanvas [ 
     | rect colorRect |
     rect := Rectangle 
         origin: (figura posicion x * tamanioCelda) @ (figura posicion y * tamanioCelda)
@@ -80,22 +80,19 @@ TableroMorph >> dibujarFigura: figura en: aCanvas [ [
     
     aCanvas fillRectangle: rect color: colorRect.
     aCanvas frameRectangle: rect width: 2 color: Color blue.
-]
 
 ]
 
 { #category : #drawing }
-TableroMorph >> dibujarFigurasEn: aCanvas [ [
+TableroMorph >> dibujarFigurasEn: aCanvas [ 
     "Dibuja todas las figuras ya colocadas en el tablero"
     tablero figuras do: [ :figura |
         self dibujarFigura: figura en: aCanvas
     ].
 ]
 
-]
-
 { #category : #drawing }
-TableroMorph >> dibujarGrillaEn: aCanvas [ [
+TableroMorph >> dibujarGrillaEn: aCanvas [ 
     | filas columnas |
     filas := tablero filas.
     columnas := tablero columnas.
@@ -115,12 +112,11 @@ TableroMorph >> dibujarGrillaEn: aCanvas [ [
             to: (columnas * tamanioCelda) @ (fila * tamanioCelda) 
             width: 1 
             color: Color gray ].
-]
 
 ]
 
 { #category : #drawing }
-TableroMorph >> dibujarPreviewEn: aCanvas [ [
+TableroMorph >> dibujarPreviewEn: aCanvas [ 
     "Dibuja el preview de la figura que se está por colocar"
     | rect  colorRect ancho alto |
     posicionPreview ifNil: [ ^ self ].
@@ -139,12 +135,12 @@ TableroMorph >> dibujarPreviewEn: aCanvas [ [
     
     aCanvas fillRectangle: rect color: colorRect.
     aCanvas frameRectangle: rect width: 2 color: (puedeColocar ifTrue: [ Color green ] ifFalse: [ Color red ]).
-]
+
 
 ]
 
 { #category : #drawing }
-TableroMorph >> drawOn: aCanvas [ [
+TableroMorph >> drawOn: aCanvas [ 
     super drawOn: aCanvas.
     
     "Dibujar la grilla"
@@ -157,39 +153,41 @@ TableroMorph >> drawOn: aCanvas [ [
     figuraPreview ifNotNil: [ 
         self dibujarPreviewEn: aCanvas 
     ].
-]
 
 ]
 
 { #category : #'event handling' }
-TableroMorph >> handlesMouseDown: evt [ [
+TableroMorph >> handlesMouseDown: evt [ 
     ^ true
-]
+
 
 ]
 
 { #category : #'event handling' }
-TableroMorph >> handlesMouseOver: evt [ [
+TableroMorph >> handlesMouseOver: evt [ 
     ^ true
-]
 
 ]
 
 { #category : #initialization }
 TableroMorph >> initialize [ 
+	super initialize.
+	Transcript show: 'TableroMorph >> initialize llamado'; cr.
     tamanioCelda := 30.
     figuraPreview := nil.
     posicionPreview := nil.
     puedeColocar := false.
     callback := nil.
+	Transcript show: 'por ejecutar self borderWidth'; cr.
     self borderWidth: 2.
+	Transcript show: 'por ejecutar self borderColor'; cr.
     self borderColor: Color black.
     self color: Color white.
 
 ]
 
 { #category : #'event handling' }
-TableroMorph >> mouseDown: evt [ [
+TableroMorph >> mouseDown: evt [ 
     "Se ejecuta cuando se hace click en el tablero"
     figuraPreview ifNil: [ ^ self ].
     puedeColocar ifFalse: [ ^ self ].
@@ -198,36 +196,36 @@ TableroMorph >> mouseDown: evt [ [
     callback ifNotNil: [ 
         callback value: posicionPreview 
     ].
-]
+
 
 ]
 
 { #category : #'event handling' }
-TableroMorph >> mouseMove: evt [ [
+TableroMorph >> mouseMove: evt [ 
     "Se ejecuta cuando el mouse se mueve sobre el tablero"
     figuraPreview ifNil: [ ^ self ].
     
     posicionPreview := self posicionCeldaDesde: evt position.
     self actualizarValidezPosicion.
     self changed. "Fuerza redibujar"
-]
+
 
 ]
 
 { #category : #'private ' }
-TableroMorph >> posicionCeldaDesde: unPunto [ [
+TableroMorph >> posicionCeldaDesde: unPunto [ 
     "Convierte coordenadas de pixel a coordenadas de celda"
     | puntoLocal x y |
     puntoLocal := unPunto - self position.
     x := (puntoLocal x / tamanioCelda) floor.
     y := (puntoLocal y / tamanioCelda) floor.
     ^ x @ y
-]
+
 
 ]
 
 { #category : #operations }
-TableroMorph >> rotarFigura [ [
+TableroMorph >> rotarFigura [ 
     | ancho alto |
     "Rota la figura preview"
     figuraPreview ifNil: [ ^ self ].
@@ -240,28 +238,35 @@ TableroMorph >> rotarFigura [ [
     
     self actualizarValidezPosicion.
     self changed.
-]
+
 
 ]
 
 { #category : #acccessing }
-TableroMorph >> tablero [ [
+TableroMorph >> tablero [ 
     ^ tablero
-]
+
 
 ]
 
 { #category : #initialization }
-TableroMorph >> tablero: unTablero [ [
+TableroMorph >> tablero: unTablero [ 
+    | ancho alto |
     tablero := unTablero.
-    self extent: (tablero columnas * tamanioCelda) @ (tablero filas * tamanioCelda).
-]
+     ancho := tablero columnas * tamanioCelda.
+    alto := tablero filas * tamanioCelda.
+	Transcript show: 'Estableciendo extent: ', ancho asString, '@', alto asString; cr.
+    self bounds: (0@0 extent: ancho@alto).
+    Transcript show: 'TableroMorph creado exitosamente'; cr.
+
+
+
 
 ]
 
 { #category : #acccessing }
-TableroMorph >> tamanioCelda [ [
+TableroMorph >> tamanioCelda [ 
     ^ tamanioCelda
-]
+
 
 ]

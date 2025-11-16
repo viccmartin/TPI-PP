@@ -26,34 +26,34 @@ PanelTablero class >> on: unTablero [
 ]
 
 { #category : #operations }
-PanelTablero >> activarModoColocacion: ancho alto: alto [ [
+PanelTablero >> activarModoColocacion: ancho alto: alto [ 
     "Delega al TableroMorph"
-    self tableroMorph activarModoColocacion: ancho alto: alto
-]
+    morphTablero morph activarModoColocacion: ancho alto: alto
+
 
 ]
 
 { #category : #operations }
-PanelTablero >> actualizar [ [
+PanelTablero >> actualizar [ 
     "Fuerza actualización visual del tablero"
-    self tableroMorph  changed
-]
+    morphTablero morph changed
+
 
 ]
 
 { #category : #operations }
-PanelTablero >> callback: unBloque [ [
+PanelTablero >> callback: unBloque [ 
     "Define el callback que se ejecuta al hacer click"
-    self tableroMorph  callback: unBloque
-]
+    morphTablero morph callback: unBloque
+
 
 ]
 
 { #category : #operations }
-PanelTablero >> desactivarModoColocacion [ [
+PanelTablero >> desactivarModoColocacion [ 
     "Delega al TableroMorph"
-    self tableroMorph  desactivarModoColocacion
-]
+    morphTablero morph desactivarModoColocacion
+
 
 ]
 
@@ -72,10 +72,10 @@ PanelTablero >> morphTablero [
 ]
 
 { #category : #operations }
-PanelTablero >> rotarFigura [ [
+PanelTablero >> rotarFigura [ 
     "Delega al TableroMorph"
-    self tableroMorph  rotarFigura
-]
+    morphTablero morph rotarFigura
+
 
 ]
 
@@ -87,12 +87,4 @@ PanelTablero >> tablero [
 { #category : #acccessing }
 PanelTablero >> tablero: unTablero [
     tablero := unTablero
-]
-
-{ #category : #acccessing }
-PanelTablero >> tableroMorph [ [
-    "Acceso al morph interno"
-    ^ morphTablero morph
-]
-
 ]

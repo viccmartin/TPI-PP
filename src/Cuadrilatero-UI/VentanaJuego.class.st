@@ -4,14 +4,8 @@ Class {
 	#instVars : [
 		'app',
 		'partida',
-		'tableroMorph',
-		'labelTurno',
-		'botonTirarDados',
-		'botonFinalizar',
-		'panelPuntuacion',
 		'morphTablero',
-		'dimensionesActuales',
-		'figuraRotada'
+		'panelTablero'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -19,6 +13,8 @@ Class {
 { #category : #specs }
 VentanaJuego class >> defaultSpec [
     ^ SpecLayout composed
+        add: #panelTablero;
+        yourself
 ]
 
 { #category : #'instance creation' }
@@ -53,38 +49,26 @@ VentanaJuego >> finalizarPartida [
 
 { #category : #api }
 VentanaJuego >> initialExtent [ 
-	^1000@700.
+	^800@500.
 ]
 
 { #category : #initialization }
 VentanaJuego >> initializeWidgets [ 
-    tableroMorph := TableroMorph tablero: partida tablero.
-    self focusOrder add: tableroMorph.
+    panelTablero := PanelTablero on: partida tablero.
     
 
 ]
 
-{ #category : #api }
-VentanaJuego >> openWithSpec [ [
-    window := super openWithSpec.
-    window widget addMorph: tableroMorph.
-    ^ window
-]
-
+{ #category : #acccessing }
+VentanaJuego >> panelTablero [
+	^panelTablero.
 ]
 
 { #category : #acccessing }
 VentanaJuego >> partida: unaPartida app: unaApp [
     app := unaApp.
     partida := unaPartida.
-    dimensionesActuales := nil.
-    figuraRotada := false.
 
-]
-
-{ #category : #acccessing }
-VentanaJuego >> tableroMorph [
- ^tableroMorph .
 ]
 
 { #category : #api }
