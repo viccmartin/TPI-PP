@@ -4,12 +4,12 @@ Class {
 	#instVars : [
 		'app',
 		'partida',
-		'panelTablero',
 		'labelTurno',
 		'labelDimensiones',
 		'botonTirarDados',
 		'botonRotar',
-		'dimensionesActuales'
+		'dimensionesActuales',
+		'tableroMorph'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -24,8 +24,7 @@ VentanaJuego class >> defaultSpec [
                     row add: #labelDimensiones ] height: 30;
                 newRow: [ :row |
                     row add: #botonTirarDados.
-                    row add: #botonRotar ] height: 40;
-                newRow: [ :row | row add: #panelTablero ] ];
+                    row add: #botonRotar ] height: 40 ];
         yourself
 ]
 
@@ -67,43 +66,30 @@ VentanaJuego >> botonTirarDados [
 ^botonTirarDados 
 ]
 
-{ #category : #operations }
-VentanaJuego >> colocarFiguraEn: posicion [ 
-    | ancho alto exito |
-    dimensionesActuales ifNil: [ ^ self ].
-    
-    ancho := dimensionesActuales at: #ancho.
-    alto := dimensionesActuales at: #alto.
-    
-    exito := partida colocarFigura: ancho alto: alto en: posicion.
-    
-    exito ifTrue: [
-        panelTablero desactivarModoColocacion.
-        panelTablero actualizar.
-        self actualizarTurno.
-        botonTirarDados enabled: true.
-        botonRotar enabled: false.
-        dimensionesActuales := nil.
-        
-        self verificarFinDeJuego.
-    ] ifFalse: [
-        UIManager default inform: 'No se puede colocar la figura ahí.'.
-    ].
-
+{ #category : #specs }
+VentanaJuego >> defaultSpec [
+    <spec: #default>
+    ^ SpecLayout composed
+        newRow: [ :row |
+            row
+                add: #labelTurno;
+                add: #botonTirarDados;
+                add: #botonRotar;
+                add: #botonFinalizar ]
+        height: self toolbarHeight;
+        newRow: [ :row |
+            row add: #labelResultado ]
+        height: 25;
+        newRow: [ :mainRow |
+            mainRow
+                add: #tableroMorph;
+                add: #panelPuntuacion width: 200 ];
+        yourself
 ]
 
 { #category : #acccessing }
 VentanaJuego >> dimensionesActuales [
 	^dimensionesActuales.
-]
-
-{ #category : #operations }
-VentanaJuego >> finalizarPartida [
-    | resultado |
-    resultado := partida finalizarManualmente.
-    app finalizarPartidaCon: resultado.
-    self window close.
-
 ]
 
 { #category : #api }
@@ -113,8 +99,6 @@ VentanaJuego >> initialExtent [
 
 { #category : #initialization }
 VentanaJuego >> initializeWidgets [ 
-    panelTablero := PanelTablero on: partida tablero.
-
 	labelTurno := self newLabel.
     labelTurno label: 'Turno: ', partida turnoActual nombre.
     
@@ -131,9 +115,34 @@ VentanaJuego >> initializeWidgets [
         label: 'Rotar';
         enabled: false;
         action: [ self rotarFigura ].
+	
+	tableroMorph := TableroMorph on: partida tablero.
+	tableroMorph whenClickDo: [:punto| self intentarColocarFiguraEn: punto ]
 
     
 
+]
+
+{ #category : #operations }
+VentanaJuego >> intentarColocarFiguraEn: punto [
+ | exito |
+    dimensionesActuales ifNil: [
+        UIManager default inform: 'Debe tirar los dados primero.'.
+        ^ self ].
+    exito := partida colocarFigura: dimensionesActuales x 
+        alto: dimensionesActuales y 
+        en: punto.
+    
+    exito ifTrue: [
+        tableroMorph desactivarModoColocacion.
+        tableroMorph redibujar.
+        dimensionesActuales := nil.
+        botonTirarDados enabled: true.
+        botonRotar enabled: false.
+        self actualizarTurno.
+        self verificarFinDeJuego ]
+    ifFalse: [
+        UIManager default inform: 'No se puede colocar la figura aquí.' ].
 ]
 
 { #category : #acccessing }
@@ -147,11 +156,6 @@ VentanaJuego >> labelTurno [
 ]
 
 { #category : #acccessing }
-VentanaJuego >> panelTablero [
-	^panelTablero.
-]
-
-{ #category : #acccessing }
 VentanaJuego >> partida: unaPartida app: unaApp [
     app := unaApp.
     partida := unaPartida.
@@ -159,44 +163,33 @@ dimensionesActuales := nil.
 
 ]
 
-{ #category : #operations }
-VentanaJuego >> rotarFigura [ 
-	 | temp |
-    dimensionesActuales ifNil: [ ^ self ].
-    
-    "Intercambiar ancho y alto"
-    temp := dimensionesActuales at: #ancho.
-    dimensionesActuales at: #ancho put: (dimensionesActuales at: #alto).
-    dimensionesActuales at: #alto put: temp.
-    
-    "Actualizar label"
-    labelDimensiones label: (dimensionesActuales at: #ancho) asString, ' × ', (dimensionesActuales at: #alto) asString.
-    
-    "Rotar en el tablero"
-    panelTablero rotarFigura.
+{ #category : #acccessing }
+VentanaJuego >> tableroMorph [
+    "Este método es CRUCIAL para que Spec pueda acceder al morph"
+    ^ tableroMorph
 ]
 
 { #category : #operations }
-VentanaJuego >> tirarDados [ 
-	| ancho alto |
-    dimensionesActuales := partida tirarDados.
-    ancho := dimensionesActuales at: #ancho.
-    alto := dimensionesActuales at: #alto.
+VentanaJuego >> tirarDados [
+    | resultado |
+    dimensionesActuales ifNotNil: [
+        UIManager default inform: 'Ya hay dados tirados. Coloque la figura primero.'.
+        ^ self ].
     
-    labelDimensiones label: ancho asString, ' × ', alto asString.
+    resultado := partida tirarDados.
+    dimensionesActuales := (resultado at: #ancho) @ (resultado at: #alto).
     
-    "Verificar si el jugador puede colocar la figura"
-    (partida verificarJugadorPuedeColocar: ancho alto: alto) ifFalse: [
-        UIManager default inform: partida turnoActual nombre, ' no puede colocar esta figura. Turno perdido.'.
-        self actualizarTurno.
-        dimensionesActuales := nil.
-        ^ self
-    ].
+    "Verificar si puede colocar"
+    (partida verificarJugadorPuedeColocar: dimensionesActuales x alto: dimensionesActuales y)
+        ifFalse: [
+            UIManager default inform: 'No hay espacio. Turno perdido.'.
+            dimensionesActuales := nil.
+            self actualizarTurno.
+            self verificarFinDeJuego.
+            ^ self ].
     
-    "Activar modo colocación en el tablero"
-    panelTablero activarModoColocacion: ancho alto: alto.
-    panelTablero callback: [ :posicion | self colocarFiguraEn: posicion ].
-    
+    "Activar modo colocación"
+    tableroMorph activarModoColocacion: dimensionesActuales.
     botonTirarDados enabled: false.
     botonRotar enabled: true.
 
@@ -205,14 +198,4 @@ VentanaJuego >> tirarDados [
 { #category : #api }
 VentanaJuego >> title [ 
 ^'Cuadrilatero - Partida en juego'
-]
-
-{ #category : #operations }
-VentanaJuego >> verificarFinDeJuego [
-	| resultado |
-	partida finalizada
-		ifFalse: [ ^ self ].
-	resultado := partida determinarGanador.
-	app finalizarPartidaCon: resultado.
-	self window close
 ]
