@@ -66,6 +66,27 @@ VentanaJuego >> botonTirarDados [
 ^botonTirarDados 
 ]
 
+{ #category : #specs }
+VentanaJuego >> defaultSpec [
+    <spec: #default>
+    ^ SpecLayout composed
+        newRow: [ :row |
+            row
+                add: #labelTurno;
+                add: #botonTirarDados;
+                add: #botonRotar;
+                add: #botonFinalizar ]
+        height: self toolbarHeight;
+        newRow: [ :row |
+            row add: #labelResultado ]
+        height: 25;
+        newRow: [ :mainRow |
+            mainRow
+                add: #tableroMorph;
+                add: #panelPuntuacion width: 200 ];
+        yourself
+]
+
 { #category : #acccessing }
 VentanaJuego >> dimensionesActuales [
 	^dimensionesActuales.
@@ -95,9 +116,33 @@ VentanaJuego >> initializeWidgets [
         enabled: false;
         action: [ self rotarFigura ].
 	
+	tableroMorph := TableroMorph on: partida tablero.
+	tableroMorph whenClickDo: [:punto| self intentarColocarFiguraEn: punto ]
 
     
 
+]
+
+{ #category : #operations }
+VentanaJuego >> intentarColocarFiguraEn: punto [
+ | exito |
+    dimensionesActuales ifNil: [
+        UIManager default inform: 'Debe tirar los dados primero.'.
+        ^ self ].
+    exito := partida colocarFigura: dimensionesActuales x 
+        alto: dimensionesActuales y 
+        en: punto.
+    
+    exito ifTrue: [
+        tableroMorph desactivarModoColocacion.
+        tableroMorph redibujar.
+        dimensionesActuales := nil.
+        botonTirarDados enabled: true.
+        botonRotar enabled: false.
+        self actualizarTurno.
+        self verificarFinDeJuego ]
+    ifFalse: [
+        UIManager default inform: 'No se puede colocar la figura aquí.' ].
 ]
 
 { #category : #acccessing }
@@ -118,8 +163,36 @@ dimensionesActuales := nil.
 
 ]
 
+{ #category : #acccessing }
+VentanaJuego >> tableroMorph [
+    "Este método es CRUCIAL para que Spec pueda acceder al morph"
+    ^ tableroMorph
+]
+
 { #category : #operations }
-VentanaJuego >> tirarDados [ 
+VentanaJuego >> tirarDados [
+    | resultado |
+    dimensionesActuales ifNotNil: [
+        UIManager default inform: 'Ya hay dados tirados. Coloque la figura primero.'.
+        ^ self ].
+    
+    resultado := partida tirarDados.
+    dimensionesActuales := (resultado at: #ancho) @ (resultado at: #alto).
+    
+    "Verificar si puede colocar"
+    (partida verificarJugadorPuedeColocar: dimensionesActuales x alto: dimensionesActuales y)
+        ifFalse: [
+            UIManager default inform: 'No hay espacio. Turno perdido.'.
+            dimensionesActuales := nil.
+            self actualizarTurno.
+            self verificarFinDeJuego.
+            ^ self ].
+    
+    "Activar modo colocación"
+    tableroMorph activarModoColocacion: dimensionesActuales.
+    botonTirarDados enabled: false.
+    botonRotar enabled: true.
+
 ]
 
 { #category : #api }

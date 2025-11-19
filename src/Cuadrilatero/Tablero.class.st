@@ -72,6 +72,11 @@ Tablero >> filas: f columnas:c [
 
 ]
 
+{ #category : #acccessing }
+Tablero >> partida [
+    ^ Partida
+]
+
 { #category : #testing }
 Tablero >> puedeColocarFigura: ancho alto: alto en: posicion [
 	| x y |
