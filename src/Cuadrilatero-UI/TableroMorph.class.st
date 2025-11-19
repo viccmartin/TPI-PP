@@ -1,6 +1,6 @@
 Class {
 	#name : #TableroMorph,
-	#superclass : #Object,
+	#superclass : #Morph,
 	#instVars : [
 		'tablero',
 		'tamanioCelda',
@@ -12,6 +12,13 @@ Class {
 	],
 	#category : #'Cuadrilatero-UI'
 }
+
+{ #category : #'instance creation' }
+TableroMorph class >> on: unTablero [
+    ^ self new
+        tablero: unTablero;
+        yourself.
+]
 
 { #category : #'game controls' }
 TableroMorph >> activarModoColocacion: dimensiones [
@@ -177,11 +184,6 @@ TableroMorph >> mouseMove: evt [
 
 ]
 
-{ #category : #'instance creation' }
-TableroMorph >> on: unTablero [
-    ^ self new tablero: unTablero; yourself
-]
-
 { #category : #'game controls' }
 TableroMorph >> redibujar [
     self changed.
@@ -200,10 +202,9 @@ TableroMorph >> rotarFigura [
     self changed.
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 TableroMorph >> tablero: unTablero [
     tablero := unTablero.
-    self extent: self calcularExtension.
 ]
 
 { #category : #'game controls' }
