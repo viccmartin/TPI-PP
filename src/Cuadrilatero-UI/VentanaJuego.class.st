@@ -8,7 +8,8 @@ Class {
 		'labelDimensiones',
 		'botonTirarDados',
 		'botonRotar',
-		'dimensionesActuales'
+		'dimensionesActuales',
+		'tableroMorph'
 	],
 	#category : #'Cuadrilatero-UI'
 }
