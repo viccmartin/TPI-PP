@@ -6,23 +6,42 @@ Class {
 		'resultado',
 		'labelResultado',
 		'botonNuevaPartida',
-		'botonSalir'
+		'botonSalir',
+		'titulo'
 	],
 	#category : #'Cuadrilatero-UI'
 }
 
 { #category : #specs }
 DialogoFinPartida class >> defaultSpec [
-    "Define la disposición de los widgets en el diálogo de fin de partida"
-    ^ SpecLayout composed
-        newColumn: [ :col | 
-            col
-                newRow: [ :row | 
-                    row add: #labelResultado ].
-            col
-                newRow: [ :row |
-                    row add: #botonNuevaPartida.
-                    row add: #botonSalir ] ]
+	^ SpecLayout composed
+		newColumn: {
+
+			"----- TÍTULO -----"
+			(SpecLayout newRow: [ :row |
+				row add: #titulo.
+			]).
+
+			"----- SEPARADOR -----"
+			(SpecLayout newRow: [ :row | ]) height: 10.
+
+			"----- TEXTO DEL RESULTADO -----"
+			(SpecLayout newRow: [ :row |
+				row add: #labelResultado.
+			]).
+
+			"----- SEPARADOR -----"
+			(SpecLayout newRow: [ :row | ]) height: 10.
+
+			"----- BOTONES -----"
+			(SpecLayout newRow: [ :row |
+				row add: #botonNuevaPartida.
+				row add: #botonSalir.
+			]) height: 50.
+
+		};
+		size: 420@250;
+		yourself.
 
 ]
 
@@ -44,6 +63,19 @@ DialogoFinPartida >> app [
 { #category : #acccessing }
 DialogoFinPartida >> app: unaApp [
     app := unaApp
+
+]
+
+{ #category : #acccessing }
+DialogoFinPartida >> botonNuevaPartida [
+    ^ botonNuevaPartida
+
+]
+
+{ #category : #acccessing }
+DialogoFinPartida >> botonSalir [
+    ^ botonSalir
+
 
 ]
 
@@ -74,16 +106,39 @@ DialogoFinPartida >> generarTextoResultado [
 DialogoFinPartida >> initializeWidgets [
     super initializeWidgets.
 
+	 "----- TÍTULO -----"
+    titulo := self newLabel.
+    titulo label: 'Fin de la Partida'.
+    titulo hAlign: #center.
+    titulo vAlign: #center.
+    titulo font: (LogicalFont familyName: 'Arial' pointSize: 20).
+
+    "----- TEXTO DEL RESULTADO -----"
     labelResultado := self newLabel.
     labelResultado label: (self generarTextoResultado).
+    labelResultado hAlign: #center.
+    labelResultado vAlign: #center.
+    labelResultado autoFit: true.
+    labelResultado font: (LogicalFont familyName: 'Arial' pointSize: 14).
 
+    "----- BOTÓN NUEVA PARTIDA -----"
     botonNuevaPartida := self newButton.
     botonNuevaPartida label: 'Iniciar nueva partida'.
     botonNuevaPartida action: [ self nuevaPartida ].
+    botonNuevaPartida extent: 180@35.
 
+    "----- BOTÓN SALIR -----"
     botonSalir := self newButton.
     botonSalir label: 'Terminar juego'.
     botonSalir action: [ self salir ].
+    botonSalir extent: 150@35.
+
+
+]
+
+{ #category : #acccessing }
+DialogoFinPartida >> labelResultado [
+    ^ labelResultado
 
 ]
 
@@ -104,4 +159,10 @@ DialogoFinPartida >> resultado: unResultado app: unaApp [
 { #category : #actions }
 DialogoFinPartida >> salir [
     self window close.
+]
+
+{ #category : #acccessing }
+DialogoFinPartida >> titulo [
+    ^ titulo
+
 ]
