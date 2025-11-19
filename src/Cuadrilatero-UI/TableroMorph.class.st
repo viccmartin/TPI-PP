@@ -60,24 +60,31 @@ TableroMorph >> desactivarModoColocacion [
 ]
 
 { #category : #drawing }
-TableroMorph >> dibujarFigurasEn: aCanvas [
-    | origen |
+TableroMorph >> dibujarFigurasEn: aCanvas [ 
+    | origen primerJugador |
     origen := self bounds origin.
     
+    tablero figuras ifEmpty: [ ^ self ].
+    
+    "El primer jugador que colocó una figura"
+    primerJugador := tablero figuras first jugador.
+    
     tablero figuras do: [ :figura |
-        | rect color |
-        "Azul para jugador 1, rojo para jugador 2"
-        color := (figura jugador == tablero partida jugador1)
-            ifTrue: [ Color blue alpha: 0.4 ]
-            ifFalse: [ Color red alpha: 0.4 ].
+        | rect posicion |
+        
+        posicion := figura posicion.
+        
+        "Azul cyan para el primer jugador, naranja para el segundo"
+        color := (figura jugador == primerJugador)
+            ifTrue: [ Color cyan alpha: 0.6 ]
+            ifFalse: [ Color orange alpha: 0.6 ].
         
         rect := Rectangle
-            origin: origen + ((figura posicionX * tamanioCelda) @ (figura posicionY * tamanioCelda))
+            origin: origen + ((posicion x * tamanioCelda) @ (posicion y * tamanioCelda))
             extent: (figura ancho * tamanioCelda) @ (figura alto * tamanioCelda).
         
         aCanvas fillRectangle: rect color: color.
         aCanvas frameRectangle: rect width: 2 color: color darker ].
-
 ]
 
 { #category : #drawing }
@@ -131,9 +138,19 @@ TableroMorph >> dibujarPreviewEn: aCanvas [
 TableroMorph >> drawOn: aCanvas [
     super drawOn: aCanvas.
     tablero ifNil: [ ^ self ].
-		self dibujarGrillaEn: aCanvas.
+    
+    "Dibujar fondo blanco"
+    aCanvas fillRectangle: self bounds color: Color white.
+    
+    "Dibujar la grilla"
+    self dibujarGrillaEn: aCanvas.
+    
+    "Dibujar las figuras ya colocadas"
     self dibujarFigurasEn: aCanvas.
+    
+    "Dibujar el preview si está en modo colocación"
     modoColocacion ifTrue: [ self dibujarPreviewEn: aCanvas ].
+
 ]
 
 { #category : #'event handling' }
@@ -149,7 +166,6 @@ TableroMorph >> handlesMouseOver: evt [
 { #category : #initialization }
 TableroMorph >> initialize [
     super initialize.
-    tamanioCelda := 30.
     figuraPreview := nil.
     posicionPreview := nil.
     puedeColocar := false.
@@ -158,6 +174,7 @@ TableroMorph >> initialize [
     self borderWidth: 2.
     self borderColor: Color black.
     self color: Color white.
+
 ]
 
 { #category : #'event handling' }
@@ -204,7 +221,18 @@ TableroMorph >> rotarFigura [
 
 { #category : #accessing }
 TableroMorph >> tablero: unTablero [
+    | tamanoFijo |
     tablero := unTablero.
+    
+    "Tamaño fijo del tablero en píxeles"
+    tamanoFijo := 400.
+    
+    "Calcular tamaño de celda según cantidad de filas/columnas"
+    "Usamos el máximo entre filas y columnas para que las celdas sean cuadradas"
+    tamanioCelda := tamanoFijo // (tablero filas max: tablero columnas).
+    
+    "Establecer el extent del tablero"
+    self extent: (tablero columnas * tamanioCelda) @ (tablero filas * tamanioCelda).
 ]
 
 { #category : #'game controls' }

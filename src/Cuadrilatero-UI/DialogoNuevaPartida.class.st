@@ -132,32 +132,37 @@ DialogoNuevaPartida >> initialExtent [
 ]
 
 { #category : #initialization }
-DialogoNuevaPartida >> initializeWidgets [
-    "Inicializa todos los widgets del diálogo"
+DialogoNuevaPartida >> initializeWidgets [ 
 
-    campoDropDown  := self newDropList.
+    campoDropDown := self newDropList.
     campoDropDown 
         items: self opcionesTamano;
         displayBlock: [ :item | item first ];
         setIndex: 1.
-	labelDropDown := self newLabel.
-	labelDropDown label: 'Ingrese el tamaño del tablero:'.
+    
+    labelDropDown := self newLabel.
+    labelDropDown label: 'Ingrese el tamaño del tablero:'.
     
     campoJugador1 := self newTextInput.
-    campoJugador1 text: 'Jugador 1'.
-	labelJugador1 := self newLabel.
-	labelJugador1 label: 'Ingrese nombre del Jugador 1:'.
+    campoJugador1 
+        text: 'Jugador 1';
+        autoAccept: true.
+    
+    labelJugador1 := self newLabel.
+    labelJugador1 label: 'Ingrese nombre del Jugador 1:'.
     
     campoJugador2 := self newTextInput.
-    campoJugador2 text: 'Jugador 2'.
-	labelJugador2 := self newLabel.
-	labelJugador2 label: 'Ingrese nombre del Jugador 2:'.
-
+    campoJugador2 
+        text: 'Jugador 2';
+        autoAccept: true.
+    
+    labelJugador2 := self newLabel.
+    labelJugador2 label: 'Ingrese nombre del Jugador 2:'.
     
     botonComenzar := self newButton.
     botonComenzar 
         label: 'Comenzar';
-        action: [ self iniciarPartida  ].
+        action: [ self iniciarPartida ].
     
     botonCancelar := self newButton.
     botonCancelar 
@@ -169,6 +174,7 @@ DialogoNuevaPartida >> initializeWidgets [
         add: campoJugador2;
         add: botonComenzar;
         add: botonCancelar
+
 ]
 
 { #category : #accessing }

@@ -8,8 +8,10 @@ Class {
 		'labelDimensiones',
 		'botonTirarDados',
 		'botonRotar',
+		'botonFinalizar',
 		'dimensionesActuales',
-		'tableroMorph'
+		'tableroMorph',
+		'panelTablero'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -24,7 +26,10 @@ VentanaJuego class >> defaultSpec [
                     row add: #labelDimensiones ] height: 30;
                 newRow: [ :row |
                     row add: #botonTirarDados.
-                    row add: #botonRotar ] height: 40 ];
+                    row add: #botonRotar ] height: 40;
+					newRow: [ :row | row add: #panelTablero ];
+                newRow: [ :row |
+                    row add: #botonFinalizar right: 0.5 ] height: 40 ];
         yourself
 ]
 
@@ -40,7 +45,7 @@ VentanaJuego class >> on: unaPartida app: unaApp [
 { #category : #operations }
 VentanaJuego >> actualizarTurno [ 
     labelTurno label: 'Turno: ', partida turnoActual nombre.
-    labelDimensiones label: 'Tira los dados para obtener dimensiones'.
+    labelDimensiones label: 'Presiona "Tirar Dados" para continuar'.
 
 ]
 
@@ -54,6 +59,11 @@ VentanaJuego >> app [
 VentanaJuego >> app: unaApp [
     app := unaApp
 
+]
+
+{ #category : #acccessing }
+VentanaJuego >> botonFinalizar [
+^botonFinalizar 
 ]
 
 { #category : #acccessing }
@@ -92,18 +102,33 @@ VentanaJuego >> dimensionesActuales [
 	^dimensionesActuales.
 ]
 
+{ #category : #operations }
+VentanaJuego >> finalizarPartida [ 
+    | resultado confirmacion |
+    
+    confirmacion := UIManager default 
+        confirm: '¿Estás seguro de que quieres finalizar la partida?'.
+    
+    confirmacion ifFalse: [ ^ self ].
+    
+    resultado := partida finalizarManualmente.
+    app finalizarPartidaCon: resultado.
+    self window close.
+]
+
 { #category : #api }
 VentanaJuego >> initialExtent [ 
-	^800@500.
+	^1000@700.
 ]
 
 { #category : #initialization }
-VentanaJuego >> initializeWidgets [ 
-	labelTurno := self newLabel.
+VentanaJuego >> initializeWidgets [
+    
+    labelTurno := self newLabel.
     labelTurno label: 'Turno: ', partida turnoActual nombre.
     
     labelDimensiones := self newLabel.
-    labelDimensiones label: 'Tira los dados para obtener dimensiones'.
+    labelDimensiones label: 'Presiona "Tirar Dados" para comenzar'.
     
     botonTirarDados := self newButton.
     botonTirarDados 
@@ -115,27 +140,33 @@ VentanaJuego >> initializeWidgets [
         label: 'Rotar';
         enabled: false;
         action: [ self rotarFigura ].
-	
-	tableroMorph := TableroMorph on: partida tablero.
-	tableroMorph whenClickDo: [:punto| self intentarColocarFiguraEn: punto ]
+    
+    botonFinalizar := self newButton.
+    botonFinalizar 
+        label: 'Finalizar Partida';
+        action: [ self finalizarPartida ].
+    
+    panelTablero := PanelTablero on: partida tablero.
+    panelTablero whenClickDo: [ :punto | self intentarColocarFiguraEn: punto ].
 
     
 
 ]
 
 { #category : #operations }
-VentanaJuego >> intentarColocarFiguraEn: punto [
- | exito |
+VentanaJuego >> intentarColocarFiguraEn: punto [ 
+    | exito |
     dimensionesActuales ifNil: [
         UIManager default inform: 'Debe tirar los dados primero.'.
         ^ self ].
+    
     exito := partida colocarFigura: dimensionesActuales x 
         alto: dimensionesActuales y 
         en: punto.
     
     exito ifTrue: [
-        tableroMorph desactivarModoColocacion.
-        tableroMorph redibujar.
+        panelTablero desactivarModoColocacion.
+        panelTablero redibujar.
         dimensionesActuales := nil.
         botonTirarDados enabled: true.
         botonRotar enabled: false.
@@ -143,6 +174,7 @@ VentanaJuego >> intentarColocarFiguraEn: punto [
         self verificarFinDeJuego ]
     ifFalse: [
         UIManager default inform: 'No se puede colocar la figura aquí.' ].
+
 ]
 
 { #category : #acccessing }
@@ -156,10 +188,29 @@ VentanaJuego >> labelTurno [
 ]
 
 { #category : #acccessing }
+VentanaJuego >> panelTablero [
+^panelTablero.
+]
+
+{ #category : #acccessing }
 VentanaJuego >> partida: unaPartida app: unaApp [
     app := unaApp.
     partida := unaPartida.
 dimensionesActuales := nil.
+
+]
+
+{ #category : #operations }
+VentanaJuego >> rotarFigura [
+    | temp |
+    dimensionesActuales ifNil: [ ^ self ].
+    
+    temp := dimensionesActuales x.
+    dimensionesActuales := dimensionesActuales y @ temp.
+    
+    labelDimensiones label: dimensionesActuales x asString, ' × ', dimensionesActuales y asString.
+    
+    panelTablero rotarFigura.
 
 ]
 
@@ -179,6 +230,8 @@ VentanaJuego >> tirarDados [
     resultado := partida tirarDados.
     dimensionesActuales := (resultado at: #ancho) @ (resultado at: #alto).
     
+    labelDimensiones label: dimensionesActuales x asString, ' × ', dimensionesActuales y asString.
+    
     "Verificar si puede colocar"
     (partida verificarJugadorPuedeColocar: dimensionesActuales x alto: dimensionesActuales y)
         ifFalse: [
@@ -189,13 +242,22 @@ VentanaJuego >> tirarDados [
             ^ self ].
     
     "Activar modo colocación"
-    tableroMorph activarModoColocacion: dimensionesActuales.
+    panelTablero activarModoColocacion: dimensionesActuales.
     botonTirarDados enabled: false.
     botonRotar enabled: true.
-
 ]
 
 { #category : #api }
 VentanaJuego >> title [ 
 ^'Cuadrilatero - Partida en juego'
+]
+
+{ #category : #operations }
+VentanaJuego >> verificarFinDeJuego [
+    | resultado |
+    partida finalizada ifFalse: [ ^ self ].
+    resultado := partida determinarGanador.
+    app finalizarPartidaCon: resultado.
+    self window close
+
 ]
