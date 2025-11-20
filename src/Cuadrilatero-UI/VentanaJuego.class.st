@@ -12,25 +12,40 @@ Class {
 		'botonFinalizar',
 		'dimensionesActuales',
 		'tableroMorph',
-		'panelTablero'
+		'panelTablero',
+		'panelPuntuacion'
 	],
 	#category : #'Cuadrilatero-UI'
 }
 
 { #category : #specs }
 VentanaJuego class >> defaultSpec [
-    ^ SpecLayout composed
+   ^ SpecLayout composed
         newColumn: [ :col |
-            col
-                newRow: [ :row |
-                    row add: #labelTurno.
-                    row add: #labelDimensiones ] height: 30;
-                newRow: [ :row |
-                    row add: #botonTirarDados.
-                    row add: #botonRotar ] height: 40;
-					newRow: [ :row | row add: #panelTablero ];
-                newRow: [ :row |
-                    row add: #botonFinalizar right: 0.5 ] height: 40 ];
+            "Fila superior: labels de turno y dimensiones"
+            col newRow: [ :row |
+                row add: #labelTurno.
+                row add: #labelDimensiones ] height: 30.
+            
+            "Fila de botones: tirar dados y rotar"
+            col newRow: [ :row |
+                row add: #botonTirarDados.
+                row add: #botonRotar ] height: 40.
+            
+            "Fila principal: tablero y panel lateral"
+            col newRow: [ :mainRow |
+                "Columna izquierda: tablero"
+                mainRow add: #panelTablero.
+                
+                "Columna derecha: puntuación y botón finalizar"
+                mainRow newColumn: [ :rightCol |
+                    rightCol add: #panelPuntuacion.
+                    rightCol newRow: [ :btnRow |
+                        btnRow add: #botonFinalizar
+                    ] height: 50
+                ] width: 300
+            ]
+        ];
         yourself
 ]
 
@@ -47,6 +62,7 @@ VentanaJuego class >> on: unaPartida app: unaApp [
 VentanaJuego >> actualizarTurno [ 
     labelTurno label: 'Turno: ', partida turnoActual nombre.
     labelDimensiones label: 'Presiona "Tirar Dados" para continuar'.
+	 panelPuntuacion actualizar.
 
 ]
 
@@ -150,6 +166,8 @@ VentanaJuego >> initializeWidgets [
     panelTablero := PanelTablero on: partida tablero.
     panelTablero whenClickDo: [ :punto | self intentarColocarFiguraEn: punto ].
 
+	panelPuntuacion := PanelPuntuacion on: partida.
+
     
 
 ]
@@ -186,6 +204,11 @@ VentanaJuego >> labelDimensiones [
 { #category : #acccessing }
 VentanaJuego >> labelTurno [
 ^labelTurno
+]
+
+{ #category : #acccessing }
+VentanaJuego >> panelPuntuacion [
+^panelPuntuacion.
 ]
 
 { #category : #acccessing }
@@ -248,6 +271,7 @@ VentanaJuego >> tirarDados [
         ifFalse: [
             UIManager default inform: 'No hay espacio. Turno perdido.'.
             dimensionesActuales := nil.
+				panelPuntuacion actualizar.
             self actualizarTurno.
             self verificarFinDeJuego.
             ^ self ].
