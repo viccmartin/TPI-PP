@@ -3,6 +3,7 @@ Class {
 	#superclass : #ComposablePresenter,
 	#instVars : [
 		'app',
+		'tablero',
 		'partida',
 		'labelTurno',
 		'labelDimensiones',
@@ -192,6 +193,16 @@ VentanaJuego >> panelTablero [
 ^panelTablero.
 ]
 
+{ #category : #accessing }
+VentanaJuego >> partida [
+	^partida
+]
+
+{ #category : #accessing }
+VentanaJuego >> partida: unaPartida [
+	partida:= unaPartida 
+]
+
 { #category : #acccessing }
 VentanaJuego >> partida: unaPartida app: unaApp [
     app := unaApp.
@@ -254,10 +265,12 @@ VentanaJuego >> title [
 
 { #category : #operations }
 VentanaJuego >> verificarFinDeJuego [
-    | resultado |
-    partida finalizada ifFalse: [ ^ self ].
-    resultado := partida determinarGanador.
-    app finalizarPartidaCon: resultado.
-    self window close
-
+ self partida finalizada ifTrue:[
+	| resultado |
+        resultado := self partida determinarGanador.
+        
+        (DialogoFinPartida new)
+            resultado: resultado;
+            ir.
+	] ifFalse:[ nil ]
 ]

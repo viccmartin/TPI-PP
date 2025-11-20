@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'filas',
 		'columnas',
-		'figuras'
+		'figuras',
+		'jugador1',
+		'jugador2'
 	],
 	#category : #Cuadrilatero
 }

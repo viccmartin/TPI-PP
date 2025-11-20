@@ -134,6 +134,12 @@ DialogoFinPartida >> initializeWidgets [
     botonSalir extent: 150@35.
 
 
+
+]
+
+{ #category : #public }
+DialogoFinPartida >> ir [
+	self openWithSpec.
 ]
 
 { #category : #acccessing }
@@ -146,6 +152,17 @@ DialogoFinPartida >> labelResultado [
 DialogoFinPartida >> nuevaPartida [
     app reiniciarJuego.
     self window close.
+
+]
+
+{ #category : #acccessing }
+DialogoFinPartida >> resultado [
+	^resultado
+]
+
+{ #category : #accessing }
+DialogoFinPartida >> resultado: unResultado [
+    resultado := unResultado.
 
 ]
 
