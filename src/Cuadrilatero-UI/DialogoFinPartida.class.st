@@ -107,7 +107,7 @@ DialogoFinPartida >> initializeWidgets [
 
 	 "----- TÍTULO -----"
     titulo := self newLabel.
-    titulo label: 'Fin de la Partida'.
+    titulo label: 'Resultado Final'.
     "----- TEXTO DEL RESULTADO -----"
     labelResultado := self newLabel.
     labelResultado label:''.
