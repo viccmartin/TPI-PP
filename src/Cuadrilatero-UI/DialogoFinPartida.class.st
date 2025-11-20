@@ -21,7 +21,7 @@ DialogoFinPartida class >> defaultSpec [
 			
 			"1. Título"
 			col newRow: [ :row | 
-				row add: #titulo 
+				row add: #titulo left: 0.25 right: 0.25.  "Deja 25% a cada lado"
 			] height: 30.
 
 			"2. SEPARADOR (Fila vacía de 10px)"
@@ -29,7 +29,7 @@ DialogoFinPartida class >> defaultSpec [
 
 			"3. Texto del Resultado"
 			col newRow: [ :row | 
-				row add: #labelResultado 
+				row add: #labelResultado left: 0.2 right: 0.2.
 			]. 
 
 			"4. SEPARADOR (Fila vacía de 10px)"
@@ -103,14 +103,36 @@ DialogoFinPartida >> generarTextoResultado [
 ]
 
 { #category : #initialization }
+DialogoFinPartida >> initializePresenter [
+    super initializePresenter.
+    
+    self whenWindowChanged: [ :w |
+        w ifNotNil: [
+            "Fuente normal"
+            titulo widget font: (LogicalFont familyName: 'Arial' pointSize: 18).
+            
+            "Fuente en negrita"
+            labelResultado widget font: (
+                (LogicalFont familyName: 'Arial' pointSize: 14) 
+                emphasis: 1  "1 = bold"
+            ).
+        ]
+    ].
+]
+
+{ #category : #initialization }
 DialogoFinPartida >> initializeWidgets [
 
 	 "----- TÍTULO -----"
     titulo := self newLabel.
     titulo label: 'Resultado Final'.
+	 titulo emphasis: 1. "negrita"
+	 titulo color: Color white.
+
     "----- TEXTO DEL RESULTADO -----"
     labelResultado := self newLabel.
-    labelResultado label:''.
+	 labelResultado label: ''.
+	 labelResultado color: Color black.
 
     "----- BOTÓN NUEVA PARTIDA -----"
     botonNuevaPartida := self newButton.
@@ -171,6 +193,6 @@ DialogoFinPartida >> salir [
 
 { #category : #accessing }
 DialogoFinPartida >> titulo [
-    ^ titulo
+    ^ 'Fin de la Partida'
 
 ]
