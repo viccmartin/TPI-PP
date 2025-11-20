@@ -14,34 +14,34 @@ Class {
 
 { #category : #specs }
 DialogoFinPartida class >> defaultSpec [
+	<spec: #defaultSpec>
+	
 	^ SpecLayout composed
-		newColumn: {
+		newColumn: [ :col | 
+			
+			"1. Título"
+			col newRow: [ :row | 
+				row add: #titulo 
+			] height: 30.
 
-			"----- TÍTULO -----"
-			(SpecLayout newRow: [ :row |
-				row add: #titulo.
-			]).
+			"2. SEPARADOR (Fila vacía de 10px)"
+			col newRow: [ :r | ] height: 10.   "<-- CORRECCIÓN AQUÍ"
 
-			"----- SEPARADOR -----"
-			(SpecLayout newRow: [ :row | ]) height: 10.
+			"3. Texto del Resultado"
+			col newRow: [ :row | 
+				row add: #labelResultado 
+			]. 
 
-			"----- TEXTO DEL RESULTADO -----"
-			(SpecLayout newRow: [ :row |
-				row add: #labelResultado.
-			]).
+			"4. SEPARADOR (Fila vacía de 10px)"
+			col newRow: [ :r | ] height: 10.   "<-- CORRECCIÓN AQUÍ"
 
-			"----- SEPARADOR -----"
-			(SpecLayout newRow: [ :row | ]) height: 10.
-
-			"----- BOTONES -----"
-			(SpecLayout newRow: [ :row |
+			"5. Botones"
+			col newRow: [ :row | 
 				row add: #botonNuevaPartida.
-				row add: #botonSalir.
-			]) height: 50.
-
-		};
-		size: 420@250;
-		yourself.
+				row add: #botonSalir. 
+			] height: 50.
+		];
+		yourself
 
 ]
 
@@ -54,25 +54,25 @@ DialogoFinPartida class >> on: unResultado app: unaApp [
     ^ instancia
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> app [
     ^ app
 
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> app: unaApp [
     app := unaApp
 
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> botonNuevaPartida [
     ^ botonNuevaPartida
 
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> botonSalir [
     ^ botonSalir
 
@@ -104,22 +104,13 @@ DialogoFinPartida >> generarTextoResultado [
 
 { #category : #initialization }
 DialogoFinPartida >> initializeWidgets [
-    super initializeWidgets.
 
 	 "----- TÍTULO -----"
     titulo := self newLabel.
     titulo label: 'Fin de la Partida'.
-    titulo hAlign: #center.
-    titulo vAlign: #center.
-    titulo font: (LogicalFont familyName: 'Arial' pointSize: 20).
-
     "----- TEXTO DEL RESULTADO -----"
     labelResultado := self newLabel.
-    labelResultado label: (self generarTextoResultado).
-    labelResultado hAlign: #center.
-    labelResultado vAlign: #center.
-    labelResultado autoFit: true.
-    labelResultado font: (LogicalFont familyName: 'Arial' pointSize: 14).
+    labelResultado label:''.
 
     "----- BOTÓN NUEVA PARTIDA -----"
     botonNuevaPartida := self newButton.
@@ -142,7 +133,7 @@ DialogoFinPartida >> ir [
 	self openWithSpec.
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> labelResultado [
     ^ labelResultado
 
@@ -155,7 +146,7 @@ DialogoFinPartida >> nuevaPartida [
 
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> resultado [
 	^resultado
 ]
@@ -163,10 +154,10 @@ DialogoFinPartida >> resultado [
 { #category : #accessing }
 DialogoFinPartida >> resultado: unResultado [
     resultado := unResultado.
-
+	labelResultado label: (self generarTextoResultado).
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> resultado: unResultado app: unaApp [
     app := unaApp.
     resultado := unResultado.
@@ -178,7 +169,7 @@ DialogoFinPartida >> salir [
     self window close.
 ]
 
-{ #category : #acccessing }
+{ #category : #accessing }
 DialogoFinPartida >> titulo [
     ^ titulo
 
