@@ -14,35 +14,32 @@ Class {
 
 { #category : #specs }
 DialogoFinPartida class >> defaultSpec [
-	<spec: #defaultSpec>
-	
-	^ SpecLayout composed
-		newColumn: [ :col | 
-			
-			"1. Título"
-			col newRow: [ :row | 
-				row add: #titulo left: 0.25 right: 0.25.  "Deja 25% a cada lado"
-			] height: 30.
+<spec>
+^ SpecLayout composed
+    newColumn: [ :col |
 
-			"2. SEPARADOR (Fila vacía de 10px)"
-			col newRow: [ :r | ] height: 10.   "<-- CORRECCIÓN AQUÍ"
+        col newRow: [ :row |
+            row add: #titulo left: 0.25 right: 0.25.
+        ] height: 40.
 
-			"3. Texto del Resultado"
-			col newRow: [ :row | 
-				row add: #labelResultado left: 0.2 right: 0.2.
-			]. 
+        col newRow: [ :row |
+            row add: #labelResultado left: 0.2 right: 0.2.
+        ] height: 30.
 
-			"4. SEPARADOR (Fila vacía de 10px)"
-			col newRow: [ :r | ] height: 10.   "<-- CORRECCIÓN AQUÍ"
+        col newRow: [ :row |
+            row add: #botonNuevaPartida.
+            row add: #botonSalir.
+        ] height: 50.
+    ];
+    yourself
 
-			"5. Botones"
-			col newRow: [ :row | 
-				row add: #botonNuevaPartida.
-				row add: #botonSalir. 
-			] height: 50.
-		];
-		yourself
 
+]
+
+{ #category : #example }
+DialogoFinPartida class >> example [
+	<sampleInstance>
+	^ self new openWithSpec
 ]
 
 { #category : #'instance creation' }
@@ -106,18 +103,9 @@ DialogoFinPartida >> generarTextoResultado [
 DialogoFinPartida >> initializePresenter [
     super initializePresenter.
     
-    self whenWindowChanged: [ :w |
-        w ifNotNil: [
-            "Fuente normal"
-            titulo widget font: (LogicalFont familyName: 'Arial' pointSize: 18).
-            
-            "Fuente en negrita"
-            labelResultado widget font: (
-                (LogicalFont familyName: 'Arial' pointSize: 14) 
-                emphasis: 1  "1 = bold"
-            ).
-        ]
-    ].
+    "Solo las acciones de botones aquí"
+    botonNuevaPartida action: [ self nuevaPartida ].
+    botonSalir action: [ self delete ].
 ]
 
 { #category : #initialization }
@@ -138,13 +126,14 @@ DialogoFinPartida >> initializeWidgets [
     botonNuevaPartida := self newButton.
     botonNuevaPartida label: 'Iniciar nueva partida'.
     botonNuevaPartida action: [ self nuevaPartida ].
-    botonNuevaPartida extent: 180@35.
+	 botonNuevaPartida extent: 180@35.
+ 
 
     "----- BOTÓN SALIR -----"
     botonSalir := self newButton.
     botonSalir label: 'Terminar juego'.
     botonSalir action: [ self salir ].
-    botonSalir extent: 150@35.
+	 botonSalir extent: 150@35.
 
 
 
@@ -165,6 +154,24 @@ DialogoFinPartida >> labelResultado [
 DialogoFinPartida >> nuevaPartida [
     app reiniciarJuego.
     self window close.
+
+]
+
+{ #category : #accessing }
+DialogoFinPartida >> openWithSpec [
+    | ventana |
+    ventana := super openWithSpec.
+
+    titulo widget
+        font: (LogicalFont familyName: 'Arial' pointSize: 20);
+        listCentering: #center.
+
+    labelResultado widget
+        font: (LogicalFont familyName: 'Arial' pointSize: 14);
+        listCentering: #center.
+
+    ^ ventana
+
 
 ]
 

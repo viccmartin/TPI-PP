@@ -293,7 +293,7 @@ VentanaJuego >> verificarFinDeJuego [
 	| resultado |
         resultado := self partida determinarGanador.
         
-        (DialogoFinPartida new)
+        (DialogoFinPartida new openWithSpec)
             resultado: resultado;
             ir.
 	] ifFalse:[ nil ]
