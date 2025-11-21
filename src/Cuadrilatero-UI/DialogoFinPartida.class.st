@@ -14,25 +14,40 @@ Class {
 
 { #category : #specs }
 DialogoFinPartida class >> defaultSpec [
-<spec>
-^ SpecLayout composed
-    newColumn: [ :col |
-
-        col newRow: [ :row |
-            row add: #titulo.
-        ] height: 40.
-
-        col newRow: [ :row |
-            row add: #labelResultado.
-        ] height: 30.
-
-        col newRow: [ :row |
-            row add: #botonNuevaPartida.
-            row add: #botonSalir.
-        ] height: 50.
-    ];
-    yourself
-
+    <spec: #defaultSpec>
+    
+    ^ SpecLayout composed
+        newColumn: [ :col |
+            
+            "Espacio superior"
+            col newRow: [ :r | ] height: 10.
+            
+            "Título"
+            col newRow: [ :row |
+                row add: #titulo.
+            ] height: 30.
+            
+            "Espacio entre título y resultado"
+            col newRow: [ :r | ] height: 10.
+            
+            "Resultado"
+            col newRow: [ :row |
+                row add: #labelResultado.
+            ] height: 30.
+            
+            "Espacio antes de los botones"
+            col newRow: [ :r | ] height: 30.
+            
+            "Botones"
+            col newRow: [ :row |
+                row add: #botonNuevaPartida.
+                row add: #botonSalir.
+            ] height: 40.
+            
+            "Espacio inferior"
+            col newRow: [ :r | ] height: 10.
+        ];
+        yourself
 
 ]
 
@@ -80,23 +95,35 @@ DialogoFinPartida >> botonSalir [
 DialogoFinPartida >> generarTextoResultado [
     "Devuelve el texto a mostrar en el label según el resultado"
     | texto |
+    
+    Transcript show: 'generarTextoResultado llamado'; cr.
+    Transcript show: 'resultado es: '; show: resultado; cr.
+    
+    resultado ifNil: [ 
+        Transcript show: 'resultado es NIL'; cr.
+        ^ 'Resultado no disponible' 
+    ].
+    
     (resultado includesKey: #ganador) ifTrue: [
+        Transcript show: 'Tiene ganador'; cr.
         texto := 'El ganador es ', (resultado at: #ganador) nombre, 
                  ' con ', ((resultado at: #ganador) superficieTotal) asString, ' unidades de superficie y ',
                  ((resultado at: #ganador) cantidadFiguras) asString, ' figuras.'.
         ^ texto
     ].
-
+    
     (resultado includesKey: #empate) ifTrue: [ 
+        Transcript show: 'Es empate'; cr.
         ^ 'La partida terminó en empate.' 
     ].
-
+    
     (resultado includesKey: #interrumpida) ifTrue: [
+        Transcript show: 'Fue interrumpida'; cr.
         ^ 'La partida fue interrumpida.'
     ].
-
+    
+    Transcript show: 'Resultado desconocido'; cr.
     ^ 'Resultado desconocido.'
-
 ]
 
 { #category : #initialization }
@@ -104,6 +131,7 @@ DialogoFinPartida >> initializePresenter [
     super initializePresenter.
     
     "Solo las acciones de botones aquí"
+	 labelResultado label: self generarTextoResultado.
     botonNuevaPartida action: [ self nuevaPartida ].
     botonSalir action: [ self delete ].
 ]
@@ -113,9 +141,8 @@ DialogoFinPartida >> initializeWidgets [
 
 	 "----- TÍTULO -----"
     titulo := self newLabel.
-    titulo label: 'Resultado Final'.
-	 titulo emphasis: 1. "negrita"
-	 titulo color: Color white.
+    titulo label: 'Resultados finales'.
+	 titulo color: Color black.
 
     "----- TEXTO DEL RESULTADO -----"
     labelResultado := self newLabel.
@@ -160,10 +187,16 @@ DialogoFinPartida >> nuevaPartida [
 { #category : #accessing }
 DialogoFinPartida >> openWithSpec [
     | ventana |
+
+    labelResultado label: resultado.  "<<< ESTA ES LA LÍNEA IMPORTANTE"
+
     ventana := super openWithSpec.
 
+    ventana extent: 500@300.
+    ventana center: World center.
+
     titulo widget
-        font: (LogicalFont familyName: 'Arial' pointSize: 20);
+        font: (LogicalFont familyName: 'Arial' pointSize: 22);
         listCentering: #center.
 
     labelResultado widget
@@ -171,8 +204,6 @@ DialogoFinPartida >> openWithSpec [
         listCentering: #center.
 
     ^ ventana
-
-
 ]
 
 { #category : #accessing }
@@ -198,8 +229,14 @@ DialogoFinPartida >> salir [
     self window close.
 ]
 
+{ #category : #api }
+DialogoFinPartida >> title [
+    "Título de la ventana"
+    ^ 'Fin de Partida'
+]
+
 { #category : #accessing }
 DialogoFinPartida >> titulo [
-    ^ 'Fin de la Partida'
+    ^ titulo
 
 ]

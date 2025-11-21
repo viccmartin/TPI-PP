@@ -289,12 +289,16 @@ VentanaJuego >> title [
 
 { #category : #operations }
 VentanaJuego >> verificarFinDeJuego [
- self partida finalizada ifTrue:[
-	| resultado |
+    self partida finalizada ifTrue: [
+        | resultado dialogo |
         resultado := self partida determinarGanador.
         
-        (DialogoFinPartida new openWithSpec)
-            resultado: resultado;
-            ir.
-	] ifFalse:[ nil ]
+        "DEPURACIÓN - Ver qué contiene resultado"
+        Transcript show: 'Resultado: '; show: resultado; cr.
+        resultado inspect.  "← Esto abrirá un inspector"
+        
+        dialogo := DialogoFinPartida new.
+        dialogo resultado: resultado.
+        dialogo openWithSpec.
+    ] ifFalse: [ nil ]
 ]
