@@ -12,7 +12,9 @@ Class {
 		'labelNombreJ2',
 		'labelSuperficieJ2',
 		'labelFigurasJ2',
-		'separador'
+		'separador',
+		'jugador1Panel',
+		'jugador2Panel'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -66,6 +68,32 @@ PanelPuntuacion >> actualizar [
 	labelFigurasJ2 label: 'Figuras: ', j2 cantidadFiguras asString.
 ]
 
+{ #category : #specs }
+PanelPuntuacion >> defaultSpec [
+    <spec>
+    ^ SpecColumnLayout new
+        add: labelPuntuacion;
+        add: (SpecColumnLayout new
+            spacing: 20;
+            add: (SpecColumnLayout new
+                spacing: 10;
+                add: labelTituloJ1;
+                add: labelNombreJ1;
+                add: labelSuperficieJ1;
+                add: labelFigurasJ1;
+                yourself);
+            add: (SpecColumnLayout new
+                spacing: 10;
+                add: labelTituloJ2;
+                add: labelNombreJ2;
+                add: labelSuperficieJ2;
+                add: labelFigurasJ2;
+                yourself);
+            yourself);
+        yourself.
+
+]
+
 { #category : #initialization }
 PanelPuntuacion >> initializeWidgets [
 	"Inicializa todos los labels del panel"
@@ -86,6 +114,7 @@ PanelPuntuacion >> initializeWidgets [
 	labelFigurasJ1 := self newLabel.
 	labelFigurasJ1 label: 'Figuras: 0'.
 	
+
 	"Jugador 2"
 	labelTituloJ2 := self newLabel.
 	labelTituloJ2 label: 'JUGADOR 2'.
@@ -98,6 +127,8 @@ PanelPuntuacion >> initializeWidgets [
 	
 	labelFigurasJ2 := self newLabel.
 	labelFigurasJ2 label: 'Figuras: 0'.
+	
+
 	
 	"Actualizar con datos reales"
 	self actualizar.
