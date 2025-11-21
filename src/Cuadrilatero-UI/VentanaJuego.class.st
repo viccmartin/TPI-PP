@@ -168,7 +168,7 @@ VentanaJuego >> initializeWidgets [
 
 	panelPuntuacion := PanelPuntuacion on: partida.
 
-    
+
 
 ]
 

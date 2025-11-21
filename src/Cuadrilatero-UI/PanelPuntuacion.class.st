@@ -91,7 +91,6 @@ PanelPuntuacion >> defaultSpec [
                 yourself);
             yourself);
         yourself.
-
 ]
 
 { #category : #initialization }
