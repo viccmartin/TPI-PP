@@ -72,40 +72,25 @@ PanelPuntuacion >> actualizar [
 PanelPuntuacion >> defaultSpec [
     <spec>
     ^ SpecColumnLayout new
-        spacing: 20;
-        add: (self newLabel
-                label: 'PUNTUACIÓN';
-                hAlign: #center;
-                font: (LogicalFont familyName: 'Arial' pointSize: 16));
+        add: labelPuntuacion;
         add: (SpecColumnLayout new
-                spacing: 25;
-
-                "Bloque Jugador 1"
-                add: (SpecColumnLayout new
-                        spacing: 8;
-                        add: (labelTituloJ1 hAlign: #center);
-                        add: labelNombreJ1;
-                        add: labelSuperficieJ1;
-                        add: labelFigurasJ1;
-                        yourself);
-
-                "Separador"
-                add: (self newLabel
-                        label: '-----------------------------';
-                        hAlign: #center);
-
-                "Bloque Jugador 2"
-                add: (SpecColumnLayout new
-                        spacing: 8;
-                        add: (labelTituloJ2 hAlign: #center);
-                        add: labelNombreJ2;
-                        add: labelSuperficieJ2;
-                        add: labelFigurasJ2;
-                        yourself);
-
+            spacing: 20;
+            add: (SpecColumnLayout new
+                spacing: 10;
+                add: labelTituloJ1;
+                add: labelNombreJ1;
+                add: labelSuperficieJ1;
+                add: labelFigurasJ1;
                 yourself);
+            add: (SpecColumnLayout new
+                spacing: 10;
+                add: labelTituloJ2;
+                add: labelNombreJ2;
+                add: labelSuperficieJ2;
+                add: labelFigurasJ2;
+                yourself);
+            yourself);
         yourself.
-
 ]
 
 { #category : #initialization }
