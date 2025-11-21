@@ -6,10 +6,16 @@ Class {
 		'columnas',
 		'figuras',
 		'jugador1',
-		'jugador2'
+		'jugador2',
+		'celdas'
 	],
 	#category : #Cuadrilatero
 }
+
+{ #category : #operations }
+Tablero >> celdaEn: unPunto [
+    ^ celdas at: unPunto x at: unPunto y.
+]
 
 { #category : #operations }
 Tablero >> colocarFigura: ancho alto: alto en: posicion jugador: jugador [
@@ -24,10 +30,25 @@ Tablero >> colocarFigura: ancho alto: alto en: posicion jugador: jugador [
 	^ nuevaFigura
 ]
 
+{ #category : #actions }
+Tablero >> colocarObstaculoEn: unPunto [
+    "Marca una celda como obstáculo"
+
+    (self estaDentroDeTablero: unPunto) ifFalse: [ ^ self ].
+
+    (self celdaEn: unPunto) ponerObstaculo.
+]
+
 { #category : #acccessing }
 Tablero >> columnas [
 	^columnas
 
+]
+
+{ #category : #operations }
+Tablero >> estaDentroDeTablero: unPunto [
+    ^ (unPunto x between: 1 and: filas)
+        and: [ unPunto y between: 1 and: columnas ].
 ]
 
 { #category : #testing }
@@ -77,6 +98,13 @@ Tablero >> filas: f columnas:c [
 { #category : #acccessing }
 Tablero >> partida [
     ^ Partida
+]
+
+{ #category : #operations }
+Tablero >> ponerObstaculoEn: unPunto [
+    | celda |
+    celda := self celdaEn: unPunto.
+    celda ponerObstaculo.
 ]
 
 { #category : #testing }

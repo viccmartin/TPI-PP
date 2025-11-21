@@ -128,7 +128,7 @@ VentanaJuego >> finalizarPartida [
     
     confirmacion ifFalse: [ ^ self ].
     
-    resultado := partida finalizarManualmente.
+    resultado := partida determinarGanador.
     app finalizarPartidaCon: resultado.
     self window close.
 ]
@@ -295,10 +295,9 @@ VentanaJuego >> verificarFinDeJuego [
         
         "DEPURACIÓN - Ver qué contiene resultado"
         Transcript show: 'Resultado: '; show: resultado; cr.
-        resultado inspect.  "← Esto abrirá un inspector"
         
         dialogo := DialogoFinPartida new.
         dialogo resultado: resultado.
         dialogo openWithSpec.
-    ] ifFalse: [ nil ]
+    ].
 ]
