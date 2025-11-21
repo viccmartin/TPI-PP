@@ -166,7 +166,9 @@ VentanaJuego >> initializeWidgets [
     panelTablero := PanelTablero on: partida tablero.
     panelTablero whenClickDo: [ :punto | self intentarColocarFiguraEn: punto ].
 
-	panelPuntuacion := PanelPuntuacion on: partida.
+	panelPuntuacion := PanelPuntuacion new.
+	panelPuntuacion partida: partida.
+
 
     
 
