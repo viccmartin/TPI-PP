@@ -19,11 +19,11 @@ DialogoFinPartida class >> defaultSpec [
     newColumn: [ :col |
 
         col newRow: [ :row |
-            row add: #titulo left: 0.25 right: 0.25.
+            row add: #titulo.
         ] height: 40.
 
         col newRow: [ :row |
-            row add: #labelResultado left: 0.2 right: 0.2.
+            row add: #labelResultado.
         ] height: 30.
 
         col newRow: [ :row |
