@@ -94,36 +94,43 @@ DialogoFinPartida >> botonSalir [
 { #category : #private }
 DialogoFinPartida >> generarTextoResultado [
     "Devuelve el texto a mostrar en el label según el resultado"
-    | texto |
-    
+    | texto jugador |
+
     Transcript show: 'generarTextoResultado llamado'; cr.
     Transcript show: 'resultado es: '; show: resultado; cr.
-    
-    resultado ifNil: [ 
-        Transcript show: 'resultado es NIL'; cr.
-        ^ 'Resultado no disponible' 
-    ].
-    
-    (resultado includesKey: #ganador) ifTrue: [
-        Transcript show: 'Tiene ganador'; cr.
-        texto := 'El ganador es ', (resultado at: #ganador) nombre, 
-                 ' con ', ((resultado at: #ganador) superficieTotal) asString, ' unidades de superficie y ',
-                 ((resultado at: #ganador) cantidadFiguras) asString, ' figuras.'.
-        ^ texto
-    ].
-    
-    (resultado includesKey: #empate) ifTrue: [ 
-        Transcript show: 'Es empate'; cr.
-        ^ 'La partida terminó en empate.' 
-    ].
-    
+
+    resultado ifNil: [ ^ 'Resultado no disponible' ].
+
+    resultado class = Dictionary ifFalse: [
+   		Transcript show: 'Resultado no es Dictionary'; cr.
+   ^ 'Resultado inválido'
+].
+
+
     (resultado includesKey: #interrumpida) ifTrue: [
         Transcript show: 'Fue interrumpida'; cr.
         ^ 'La partida fue interrumpida.'
     ].
-    
+
+    (resultado includesKey: #empate) ifTrue: [
+        Transcript show: 'Es empate'; cr.
+        ^ 'La partida terminó en empate.'
+    ].
+
+    (resultado includesKey: #ganador) ifTrue: [
+        Transcript show: 'Tiene ganador'; cr.
+        jugador := resultado at: #ganador ifAbsent: [ ^ 'Resultado inválido' ].
+
+        texto := 'El ganador es ', jugador nombre,
+                 ' con ', jugador superficieTotal asString,
+                 ' unidades de superficie y ',
+                 jugador cantidadFiguras asString, ' figuras.'.
+        ^ texto
+    ].
+
     Transcript show: 'Resultado desconocido'; cr.
     ^ 'Resultado desconocido.'
+
 ]
 
 { #category : #initialization }

@@ -63,8 +63,10 @@ Partida >> finalizada [
 
 { #category : #operations }
 Partida >> finalizarManualmente [
-	finalizada := true.
-	^ Dictionary new at: #interrumpida put: true; yourself
+	^ Dictionary new
+		at: #interrumpida put: true;
+		yourself
+
 
 ]
 

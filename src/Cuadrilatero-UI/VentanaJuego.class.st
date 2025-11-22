@@ -121,16 +121,17 @@ VentanaJuego >> dimensionesActuales [
 
 { #category : #operations }
 VentanaJuego >> finalizarPartida [ 
-    | resultado confirmacion |
+    | confirmacion resultado |
     
     confirmacion := UIManager default 
         confirm: '¿Estás seguro de que quieres finalizar la partida?'.
     
     confirmacion ifFalse: [ ^ self ].
     
-    resultado := partida determinarGanador.
+    resultado := partida finalizarManualmente.
     app finalizarPartidaCon: resultado.
     self window close.
+
 ]
 
 { #category : #api }
@@ -289,15 +290,13 @@ VentanaJuego >> title [
 
 { #category : #operations }
 VentanaJuego >> verificarFinDeJuego [
+    self partida verificarFinDePartida.
+
     self partida finalizada ifTrue: [
-        | resultado dialogo |
+        | resultado |
         resultado := self partida determinarGanador.
-        
-        "DEPURACIÓN - Ver qué contiene resultado"
-        Transcript show: 'Resultado: '; show: resultado; cr.
-        
-        dialogo := DialogoFinPartida new.
-        dialogo resultado: resultado.
-        dialogo openWithSpec.
+        app finalizarPartidaCon: resultado.
     ].
+
+
 ]
