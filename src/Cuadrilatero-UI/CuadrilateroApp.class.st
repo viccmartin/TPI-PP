@@ -2,8 +2,7 @@ Class {
 	#name : #CuadrilateroApp,
 	#superclass : #Object,
 	#instVars : [
-		'partidaActual',
-		'modoJuego'
+		'partidaActual'
 	],
 	#category : #'Cuadrilatero-UI'
 }
@@ -24,7 +23,7 @@ CuadrilateroApp >> finalizarPartidaCon: resultado [
 ]
 
 { #category : #actions }
-CuadrilateroApp >> generarObstaculosEn: unTablero [
+CuadrilateroApp >> generarObstaculosEn: unTablero [ 
     | cantidad posiciones |
 
     "Cantidad de obstáculos = 10% del tablero"
@@ -32,17 +31,19 @@ CuadrilateroApp >> generarObstaculosEn: unTablero [
 
     posiciones := Set new.
 
+    "Generar posiciones aleatorias únicas (coordenadas desde 0)"
     [ posiciones size < cantidad ] whileTrue: [
         posiciones add: (
-            (1 to: unTablero filas) atRandom
-                @
-            ((1 to: unTablero columnas) atRandom)
+            (0 to: unTablero columnas - 1) atRandom @
+            (0 to: unTablero filas - 1) atRandom
         )
     ].
 
-    posiciones do: [:pos |
-        unTablero colocarObstaculoEn: pos
-    ].
+    "Colocar obstáculos"
+    posiciones do: [ :pos |
+        unTablero colocarObstaculoEn: pos ].
+
+
 ]
 
 { #category : #operations }
@@ -53,50 +54,24 @@ CuadrilateroApp >> iniciar [
 ]
 
 { #category : #operations }
-CuadrilateroApp >> iniciarPartidaCon: nombre1 y: nombre2 tablero: tamano [ 
+CuadrilateroApp >> iniciarPartidaCon: nombre1 y: nombre2 tablero: tamano obstaculos: conObstaculos [ 
     "Llamado por DialogoNuevaPartida cuando se confirma"
     | j1 j2 tablero |
-    j1 := Jugador new.
-    j1 nombre: nombre1.
-
-    j2 := Jugador new.
-    j2 nombre: nombre2.
+    j1 := Jugador new nombre: nombre1.
+    j2 := Jugador new nombre: nombre2.
 
     tablero := Tablero new.
     tablero filas: tamano columnas: tamano.
+    
+    "Generar obstáculos si el checkbox está activado"
+    conObstaculos ifTrue: [
+        self generarObstaculosEn: tablero ].
 
     partidaActual := Partida new.
     partidaActual jugador1: j1 jugador2: j2 tablero: tablero.
-	 
-	 modoJuego = 'Con Obstáculos' ifTrue: [
-      self generarObstaculosEn: tablero
-    ].
 
     self mostrarVentanaJuego.
 
-]
-
-{ #category : #operations }
-CuadrilateroApp >> iniciarPartidaCon: nombre1 y: nombre2 tablero: tamano modo: juego [
-    "Llamado por DialogoNuevaPartida cuando se confirma"
-    | j1 j2 tablero |
-    j1 := Jugador new.
-    j1 nombre: nombre1.
-
-    j2 := Jugador new.
-    j2 nombre: nombre2.
-
-    tablero := Tablero new.
-    tablero filas: tamano columnas: tamano.
-
-    partidaActual := Partida new.
-    partidaActual jugador1: j1 jugador2: j2 tablero: tablero.
-	 
-	 modoJuego = 'Con Obstáculos' ifTrue: [
-      self generarObstaculosEn: tablero
-    ].
-
-    self mostrarVentanaJuego.
 
 ]
 

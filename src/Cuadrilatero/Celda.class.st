@@ -13,6 +13,11 @@ Celda >> esObstaculo [
     ^ esObstaculo
 ]
 
+{ #category : #testing }
+Celda >> estaLibre [ 
+    ^ esObstaculo not
+]
+
 { #category : #initialization }
 Celda >> initialize [
     super initialize.
@@ -21,7 +26,8 @@ Celda >> initialize [
 ]
 
 { #category : #actions }
-Celda >> ponerObstaculo [
+Celda >> marcarComoObstaculo [ 
     esObstaculo := true.
     ocupadaCon := nil.
+
 ]

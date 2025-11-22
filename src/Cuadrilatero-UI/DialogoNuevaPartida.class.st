@@ -11,8 +11,7 @@ Class {
 		'labelDropDown',
 		'botonComenzar',
 		'botonCancelar',
-		'labelModoJuego',
-		'campoModoJuego'
+		'checkObstaculos'
 	],
 	#classInstVars : [
 		'labelTamano',
@@ -28,7 +27,7 @@ Class {
 }
 
 { #category : #specs }
-DialogoNuevaPartida class >> defaultSpec [
+DialogoNuevaPartida class >> defaultSpec [ 
     <spec>
     ^ SpecLayout composed
         newColumn: [ :col |
@@ -45,9 +44,8 @@ DialogoNuevaPartida class >> defaultSpec [
                 newRow: [ :row | row add: #labelJugador2 ] height: 40;
                 newRow: [ :row | row add: #campoJugador2 ] height: 30;
 
-                "👉 NUEVO: MODO DE JUEGO"
-                newRow: [ :row | row add: #labelModoJuego ] height: 40;
-                newRow: [ :row | row add: #campoModoJuego ] height: 30;
+                "Checkbox obstáculos"
+                newRow: [ :row | row add: #checkObstaculos ] height: 40;
 
                 "Botones"
                 newRow: [ :row |
@@ -111,13 +109,13 @@ DialogoNuevaPartida >> campoJugador2 [
 ]
 
 { #category : #accessing }
-DialogoNuevaPartida >> campoModoJuego [
-	^campoModoJuego 
+DialogoNuevaPartida >> checkObstaculos [ 
+    ^ checkObstaculos
 ]
 
 { #category : #operations }
-DialogoNuevaPartida >> iniciarPartida [
-    | nombreJ1 nombreJ2 tamanio modoJuego |
+DialogoNuevaPartida >> iniciarPartida [ 
+    | nombreJ1 nombreJ2 tamanio conObstaculos |
 
     "Validaciones"
     nombreJ1 := campoJugador1 text trimBoth.
@@ -134,15 +132,15 @@ DialogoNuevaPartida >> iniciarPartida [
     "Tamaño del tablero"
     tamanio := self obtenerTamanoTablero.
 
-    "Modo de juego"
-    modoJuego := campoModoJuego selectedItem.
+    "Estado del checkbox"
+    conObstaculos := checkObstaculos state.
 
     "Delegar a la app"
-    app iniciarPartidaCon:nombreJ1 y:nombreJ2 tablero: tamanio 
-modo: modoJuego.
+    app iniciarPartidaCon: nombreJ1 y: nombreJ2 tablero: tamanio obstaculos: conObstaculos.
 
     "Cerrar"
     self window close.
+
 ]
 
 { #category : #accessing }
@@ -180,14 +178,11 @@ DialogoNuevaPartida >> initializeWidgets [
     labelJugador2 := self newLabel.
     labelJugador2 label: 'Ingrese nombre del Jugador 2:'.
 
-    "👉 PEGAR AQUÍ, DENTRO DEL MÉTODO"
-    labelModoJuego := self newLabel.
-    labelModoJuego label: 'Seleccione modo de juego:'.
-
-    campoModoJuego := self newDropList.
-    campoModoJuego
-        items: #('Sin obstáculos' 'Con obstáculos');
-        setIndex: 1.
+    "Checkbox para obstáculos"
+    checkObstaculos := self newCheckBox.
+    checkObstaculos 
+        label: 'Jugar con obstáculos';
+        state: false.
 
     botonComenzar := self newButton.
     botonComenzar 
@@ -214,11 +209,6 @@ DialogoNuevaPartida >> labelJugador1 [
 { #category : #accessing }
 DialogoNuevaPartida >> labelJugador2 [
 	^labelJugador2.
-]
-
-{ #category : #accessing }
-DialogoNuevaPartida >> labelModoJuego [
-	^labelModoJuego 
 ]
 
 { #category : #private }

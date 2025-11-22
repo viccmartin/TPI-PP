@@ -112,6 +112,26 @@ TableroMorph >> dibujarGrillaEn: aCanvas [
 ]
 
 { #category : #drawing }
+TableroMorph >> dibujarObstaculosEn: aCanvas [
+    | origen rect |
+    origen := self bounds origin.
+    
+    "Recorrer todas las celdas"
+    0 to: tablero columnas - 1 do: [ :x |
+        0 to: tablero filas - 1 do: [ :y |
+            "Array2D usa índices desde 1"
+            ((tablero celdas at: (y + 1) at: (x + 1)) esObstaculo) ifTrue: [
+                rect := Rectangle
+                    origin: origen + ((x * tamanioCelda) @ (y * tamanioCelda))
+                    extent: tamanioCelda @ tamanioCelda.
+                
+                "Dibujar obstáculo en gris oscuro"
+                aCanvas fillRectangle: rect color: (Color gray darker alpha: 0.7).
+                ] ] ].
+
+]
+
+{ #category : #drawing }
 TableroMorph >> dibujarPreviewEn: aCanvas [
     | rect colorRect ancho alto origen |
     posicionPreview ifNil: [ ^ self ].
@@ -135,12 +155,15 @@ TableroMorph >> dibujarPreviewEn: aCanvas [
 ]
 
 { #category : #drawing }
-TableroMorph >> drawOn: aCanvas [
+TableroMorph >> drawOn: aCanvas [ 
     super drawOn: aCanvas.
     tablero ifNil: [ ^ self ].
     
     "Dibujar fondo blanco"
     aCanvas fillRectangle: self bounds color: Color white.
+    
+    "Dibujar obstáculos primero (para que queden debajo)"
+    tablero celdas ifNotNil: [ self dibujarObstaculosEn: aCanvas ].
     
     "Dibujar la grilla"
     self dibujarGrillaEn: aCanvas.

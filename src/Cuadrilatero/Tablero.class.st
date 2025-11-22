@@ -12,9 +12,9 @@ Class {
 	#category : #Cuadrilatero
 }
 
-{ #category : #operations }
-Tablero >> celdaEn: unPunto [
-    ^ celdas at: unPunto x at: unPunto y.
+{ #category : #acccessing }
+Tablero >> celdas [ 
+    ^ celdas
 ]
 
 { #category : #operations }
@@ -31,24 +31,24 @@ Tablero >> colocarFigura: ancho alto: alto en: posicion jugador: jugador [
 ]
 
 { #category : #actions }
-Tablero >> colocarObstaculoEn: unPunto [
-    "Marca una celda como obstáculo"
+Tablero >> colocarObstaculoEn: unPunto [ 
+    "Marca una celda como obstáculo (coordenadas desde 0)"
+    | x y |
+    x := unPunto x.
+    y := unPunto y.
+    
+    "Verificar límites (coordenadas desde 0)"
+    (x >= 0 and: [ y >= 0 and: [ x < columnas and: [ y < filas ] ] ])
+        ifTrue: [ 
+            "Array2D usa índices desde 1"
+            (celdas at: (y + 1) at: (x + 1)) marcarComoObstaculo ].
 
-    (self estaDentroDeTablero: unPunto) ifFalse: [ ^ self ].
-
-    (self celdaEn: unPunto) ponerObstaculo.
 ]
 
 { #category : #acccessing }
 Tablero >> columnas [
 	^columnas
 
-]
-
-{ #category : #operations }
-Tablero >> estaDentroDeTablero: unPunto [
-    ^ (unPunto x between: 1 and: filas)
-        and: [ unPunto y between: 1 and: columnas ].
 ]
 
 { #category : #testing }
@@ -88,10 +88,16 @@ Tablero >> filas [
 ]
 
 { #category : #initialization }
-Tablero >> filas: f columnas:c [
-	filas:=f.
-	columnas:=c.
-	figuras:=OrderedCollection new.
+Tablero >> filas: f columnas: c [ 
+    filas := f.
+    columnas := c.
+    figuras := OrderedCollection new.
+    
+    "Inicializar matriz de celdas"
+    celdas := Array2D rows: filas columns: columnas.
+    1 to: filas do: [ :i |
+        1 to: columnas do: [ :j |
+            celdas at: i at: j put: Celda new ] ].
 
 ]
 
@@ -100,31 +106,29 @@ Tablero >> partida [
     ^ Partida
 ]
 
-{ #category : #operations }
-Tablero >> ponerObstaculoEn: unPunto [
-    | celda |
-    celda := self celdaEn: unPunto.
-    celda ponerObstaculo.
-]
-
 { #category : #testing }
-Tablero >> puedeColocarFigura: ancho alto: alto en: posicion [
-	| x y |
-	x := posicion x.
-	y := posicion y.
-	(x < 0 or: [ y < 0 ])
-		ifTrue: [ ^ false ].
-	x + ancho > columnas
-		ifTrue: [ ^ false ].
-	y + alto > filas
-		ifTrue: [ ^ false ].
-	^ figuras
-		noneSatisfy: [ :figura | 
-			self
-				figura: figura
-				colisionaCon: ancho
-				alto: alto
-				en: posicion ]
+Tablero >> puedeColocarFigura: ancho alto: alto en: posicion [ 
+    | x y |
+    x := posicion x.
+    y := posicion y.
+    
+    "Verificar límites del tablero"
+    (x < 0 or: [ y < 0 ]) ifTrue: [ ^ false ].
+    (x + ancho > columnas) ifTrue: [ ^ false ].
+    (y + alto > filas) ifTrue: [ ^ false ].
+    
+    "Verificar que no haya obstáculos en el área de la figura"
+    celdas ifNotNil: [
+        x to: (x + ancho - 1) do: [ :i |
+            y to: (y + alto - 1) do: [ :j |
+                "Array2D usa índices desde 1, nuestras coordenadas son desde 0"
+                ((celdas at: (j + 1) at: (i + 1)) esObstaculo) 
+                    ifTrue: [ ^ false ] ] ] ].
+    
+    "Verificar superposición con otras figuras"
+    ^ figuras noneSatisfy: [ :figura |
+        self figura: figura colisionaCon: ancho alto: alto en: posicion ]
+
 ]
 
 { #category : #operations }
