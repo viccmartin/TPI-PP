@@ -290,13 +290,11 @@ VentanaJuego >> title [
 
 { #category : #operations }
 VentanaJuego >> verificarFinDeJuego [
+| resultado |
     self partida verificarFinDePartida.
-
-    self partida finalizada ifTrue: [
-        | resultado |
-        resultado := self partida determinarGanador.
-        app finalizarPartidaCon: resultado.
-    ].
-
+    self partida finalizada ifFalse: [ ^self ].
+    resultado := self partida determinarGanador.
+    app finalizarPartidaCon: resultado.
+	self window close
 
 ]
